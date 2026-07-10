@@ -1,0 +1,878 @@
+app:
+  description: Explain Spring/backend price verdicts, fair ranges, confidence, source
+    data, and market comparison in user-friendly language. This workflow does not
+    calculate prices or change backend verdicts.
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: workflow
+  name: BozorCheck_Price_Insight_v1
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/cohere:0.0.16@b116712763a1ffb456565684a4406a3dd74f365d20ac19ecbaa0f62e85f1b7d4
+    version: null
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.4.3@84d4aae2c55724f6cdaecfadceed061d7e6b6693ae8945ea2dcd155f280743ef
+    version: null
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: code
+      id: 1781522975143-source-1781523253597-target
+      source: '1781522975143'
+      sourceHandle: source
+      target: '1781523253597'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: knowledge-retrieval
+      id: 1781523253597-source-1781523575190-target
+      source: '1781523253597'
+      sourceHandle: source
+      target: '1781523575190'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1781523575190-source-1781523620710-target
+      source: '1781523575190'
+      sourceHandle: source
+      target: '1781523620710'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: 1781523620710-source-1781523685581-target
+      source: '1781523620710'
+      sourceHandle: source
+      target: '1781523685581'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: end
+      id: 1781523685581-source-1781523944234-target
+      source: '1781523685581'
+      sourceHandle: source
+      target: '1781523944234'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: true
+        title: Start
+        type: start
+        variables:
+        - default: en
+          hint: ''
+          label: locale
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: locale
+        - default: TOMATO
+          hint: ''
+          label: productCode
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: productCode
+        - default: Tomato
+          hint: ''
+          label: productName
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: productName
+        - default: TASHKENT_CHORSU
+          hint: ''
+          label: marketCode
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: marketCode
+        - default: Chorsu Bazaar
+          hint: ''
+          label: marketName
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: marketName
+        - default: '22000'
+          hint: ''
+          label: quotedPrice
+          options: []
+          placeholder: ''
+          required: true
+          type: number
+          variable: quotedPrice
+        - default: KG
+          hint: ''
+          label: unitCode
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: unitCode
+        - default: ''
+          hint: ''
+          label: backendVerdict
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: backendVerdict
+        - default: ''
+          hint: ''
+          label: fairLow
+          options: []
+          placeholder: ''
+          required: true
+          type: number
+          variable: fairLow
+        - hint: ''
+          label: fairMid
+          options: []
+          placeholder: ''
+          required: true
+          type: number
+          variable: fairMid
+        - default: ''
+          hint: ''
+          label: fairHigh
+          options: []
+          placeholder: ''
+          required: true
+          type: number
+          variable: fairHigh
+        - default: ''
+          hint: ''
+          label: recommendedTargetPrice
+          options: []
+          placeholder: ''
+          required: false
+          type: number
+          variable: recommendedTargetPrice
+        - default: ''
+          hint: ''
+          label: confidenceScore
+          options: []
+          placeholder: ''
+          required: false
+          type: number
+          variable: confidenceScore
+        - default: ''
+          hint: ''
+          label: sampleCount
+          options: []
+          placeholder: ''
+          required: false
+          type: number
+          variable: sampleCount
+        - default: ''
+          hint: ''
+          label: sourceBreakdownJson
+          options: []
+          placeholder: ''
+          required: false
+          type: paragraph
+          variable: sourceBreakdownJson
+        - default: ''
+          hint: ''
+          label: marketComparisonJson
+          options: []
+          placeholder: ''
+          required: false
+          type: paragraph
+          variable: marketComparisonJson
+        - default: ''
+          hint: ''
+          label: surveyDate
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: surveyDate
+        - default: ''
+          hint: ''
+          label: surveyLocation
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: surveyLocation
+        - default: 'false'
+          hint: ''
+          label: includeOptionalPhrase
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: includeOptionalPhrase
+      height: 577
+      id: '1781522975143'
+      position:
+        x: 42.85714285714286
+        y: 337.1666666666667
+      positionAbsolute:
+        x: 42.85714285714286
+        y: 337.1666666666667
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "function toNumber(value, fallback = 0) {\n  const n = Number(value);\n\
+          \  return Number.isFinite(n) ? n : fallback;\n}\n\nfunction main({\n  locale,\n\
+          \  productCode,\n  productName,\n  marketCode,\n  marketName,\n  quotedPrice,\n\
+          \  unitCode,\n  backendVerdict,\n  fairLow,\n  fairMid,\n  fairHigh,\n \
+          \ recommendedTargetPrice,\n  confidenceScore,\n  sampleCount,\n  sourceBreakdownJson,\n\
+          \  marketComparisonJson,\n  surveyDate,\n  surveyLocation,\n  includeOptionalPhrase\n\
+          }) {\n  const allowedVerdicts = [\n    \"VERY_CHEAP\",\n    \"CHEAP\",\n\
+          \    \"FAIR\",\n    \"EXPENSIVE\",\n    \"VERY_EXPENSIVE\",\n    \"UNKNOWN\"\
+          \n  ];\n\n  const code = String(productCode || \"\").trim().toUpperCase();\n\
+          \  const market = String(marketCode || \"\").trim().toUpperCase();\n  const\
+          \ unit = String(unitCode || \"\").trim().toUpperCase();\n\n  const price\
+          \ = toNumber(quotedPrice, -1);\n  const low = toNumber(fairLow, 0);\n  const\
+          \ mid = toNumber(fairMid, 0);\n  const high = toNumber(fairHigh, 0);\n \
+          \ const target = toNumber(recommendedTargetPrice, mid);\n  const confidence\
+          \ = toNumber(confidenceScore, 0);\n  const samples = toNumber(sampleCount,\
+          \ 0);\n\n  let verdict = String(backendVerdict || \"\").trim().toUpperCase();\n\
+          \  if (!allowedVerdicts.includes(verdict)) {\n    verdict = \"UNKNOWN\"\
+          ;\n  }\n\n  let isValidContext = true;\n  let invalidReason = \"\";\n\n\
+          \  if (!code || code === \"UNKNOWN\") {\n    isValidContext = false;\n \
+          \   invalidReason = \"Missing or unknown product code.\";\n  } else if (!market)\
+          \ {\n    isValidContext = false;\n    invalidReason = \"Missing market code.\"\
+          ;\n  } else if (!unit) {\n    isValidContext = false;\n    invalidReason\
+          \ = \"Missing unit code.\";\n  } else if (price <= 0) {\n    isValidContext\
+          \ = false;\n    invalidReason = \"Quoted price must be greater than zero.\"\
+          ;\n  } else if (low <= 0 || mid <= 0 || high <= 0) {\n    isValidContext\
+          \ = false;\n    invalidReason = \"Missing backend fair price range.\";\n\
+          \  }\n\n  const lowData = confidence < 0.5 || samples < 3;\n\n  let pricePosition\
+          \ = \"UNKNOWN\";\n  if (price > high) {\n    pricePosition = \"ABOVE_FAIR_RANGE\"\
+          ;\n  } else if (price < low) {\n    pricePosition = \"BELOW_FAIR_RANGE\"\
+          ;\n  } else if (price >= low && price <= high) {\n    pricePosition = \"\
+          WITHIN_FAIR_RANGE\";\n  }\n\n  const includeOptional =\n    String(includeOptionalPhrase\
+          \ || \"false\").toLowerCase() === \"true\";\n\n  const lowDataWarningText\
+          \ = lowData ? \"true\" : \"false\";\n  const includeOptionalPhraseText =\
+          \ includeOptional ? \"true\" : \"false\";\n\n  const priceContextText =\
+          \ [\n    `Locale: ${locale || \"en\"}`,\n    `Product code: ${code}`,\n\
+          \    `Product name: ${productName || code}`,\n    `Market code: ${market}`,\n\
+          \    `Market name: ${marketName || market}`,\n    `Quoted price: ${price}`,\n\
+          \    `Unit code: ${unit}`,\n    `Backend verdict: ${verdict}`,\n    `Fair\
+          \ low: ${low}`,\n    `Fair mid: ${mid}`,\n    `Fair high: ${high}`,\n  \
+          \  `Recommended target price: ${target}`,\n    `Price position: ${pricePosition}`,\n\
+          \    `Confidence score: ${confidence}`,\n    `Sample count: ${samples}`,\n\
+          \    `Low data warning: ${lowDataWarningText}`,\n    `Source breakdown:\
+          \ ${sourceBreakdownJson || \"not provided\"}`,\n    `Market comparison:\
+          \ ${marketComparisonJson || \"not provided\"}`,\n    `Survey date: ${surveyDate\
+          \ || \"not provided\"}`,\n    `Survey location: ${surveyLocation || \"not\
+          \ provided\"}`,\n    `Include optional phrase: ${includeOptionalPhraseText}`,\n\
+          \    `Invalid context reason: ${invalidReason || \"none\"}`\n  ].join(\"\
+          \\n\");\n\n  const retrievalQuery = [\n    `price insight explanation`,\n\
+          \    `product: ${productName || code}`,\n    `productCode: ${code}`,\n \
+          \   `market: ${marketName || market}`,\n    `unit: ${unit}`,\n    `backend\
+          \ verdict: ${verdict}`,\n    `price position: ${pricePosition}`,\n    `low\
+          \ data warning: ${lowDataWarningText}`,\n    `source: ${sourceBreakdownJson\
+          \ || \"\"}`,\n    `market comparison: ${marketComparisonJson || \"\"}`,\n\
+          \    `survey date: ${surveyDate || \"\"}`,\n    `copy safety seller blame\
+          \ low data warning`\n  ].join(\"\\n\");\n\n  return {\n    isValidContext,\n\
+          \    invalidReason,\n    normalizedVerdict: verdict,\n    lowDataWarning:\
+          \ lowData,\n    lowDataWarningText,\n    includeOptionalPhraseText,\n  \
+          \  pricePosition,\n    priceContextText,\n    retrievalQuery\n  };\n}"
+        code_language: javascript
+        outputs:
+          includeOptionalPhraseText:
+            children: null
+            type: string
+          invalidReason:
+            children: null
+            type: string
+          isValidContext:
+            children: null
+            type: boolean
+          lowDataWarning:
+            children: null
+            type: boolean
+          lowDataWarningText:
+            children: null
+            type: string
+          normalizedVerdict:
+            children: null
+            type: string
+          priceContextText:
+            children: null
+            type: string
+          pricePosition:
+            children: null
+            type: string
+          retrievalQuery:
+            children: null
+            type: string
+        selected: false
+        title: 'Code: Validate Context'
+        type: code
+        variables:
+        - value_selector:
+          - '1781522975143'
+          - locale
+          value_type: string
+          variable: locale
+        - value_selector:
+          - '1781522975143'
+          - productCode
+          value_type: string
+          variable: productCode
+        - value_selector:
+          - '1781522975143'
+          - productName
+          value_type: string
+          variable: productName
+        - value_selector:
+          - '1781522975143'
+          - marketCode
+          value_type: string
+          variable: marketCode
+        - value_selector:
+          - '1781522975143'
+          - marketName
+          value_type: string
+          variable: marketName
+        - value_selector:
+          - '1781522975143'
+          - quotedPrice
+          value_type: number
+          variable: quotedPrice
+        - value_selector:
+          - '1781522975143'
+          - unitCode
+          value_type: string
+          variable: unitCode
+        - value_selector:
+          - '1781522975143'
+          - backendVerdict
+          value_type: string
+          variable: backendVerdict
+        - value_selector:
+          - '1781522975143'
+          - fairLow
+          value_type: number
+          variable: fairLow
+        - value_selector:
+          - '1781522975143'
+          - fairMid
+          value_type: string
+          variable: fairMid
+        - value_selector:
+          - '1781522975143'
+          - fairHigh
+          value_type: number
+          variable: fairHigh
+        - value_selector:
+          - '1781522975143'
+          - recommendedTargetPrice
+          value_type: number
+          variable: recommendedTargetPrice
+        - value_selector:
+          - '1781522975143'
+          - confidenceScore
+          value_type: number
+          variable: confidenceScore
+        - value_selector:
+          - '1781522975143'
+          - sampleCount
+          value_type: number
+          variable: sampleCount
+        - value_selector:
+          - '1781522975143'
+          - sourceBreakdownJson
+          value_type: string
+          variable: sourceBreakdownJson
+        - value_selector:
+          - '1781522975143'
+          - marketComparisonJson
+          value_type: string
+          variable: marketComparisonJson
+        - value_selector:
+          - '1781522975143'
+          - surveyDate
+          value_type: string
+          variable: surveyDate
+        - value_selector:
+          - '1781522975143'
+          - surveyLocation
+          value_type: string
+          variable: surveyLocation
+        - value_selector:
+          - '1781522975143'
+          - includeOptionalPhrase
+          value_type: string
+          variable: includeOptionalPhrase
+      height: 52
+      id: '1781523253597'
+      position:
+        x: 307.7142857142857
+        y: 358.1666666666667
+      positionAbsolute:
+        x: 307.7142857142857
+        y: 358.1666666666667
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        dataset_ids: []
+        multiple_retrieval_config:
+          reranking_enable: true
+          reranking_mode: reranking_model
+          reranking_model:
+            model: rerank-multilingual-v3.0
+            provider: langgenius/cohere/cohere
+          score_threshold: null
+          top_k: 5
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1781523253597'
+        - retrievalQuery
+        retrieval_mode: multiple
+        selected: false
+        title: 'Knowledge Retrieval: Price Insight Knowledge'
+        type: knowledge-retrieval
+      height: 52
+      id: '1781523575190'
+      position:
+        x: 569.7142857142858
+        y: 358.1666666666667
+      positionAbsolute:
+        x: 569.7142857142858
+        y: 358.1666666666667
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1781523575190'
+          - result
+        model:
+          completion_params:
+            temperature: 0.1
+          mode: chat
+          name: gpt-4o-mini
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: f99f205a-5248-4d0d-a2fd-e24dae616ff9
+          role: system
+          text: "You are BozorCheck AI Price Insight Explainer.\n\nYour job is to\
+            \ explain a backend-generated price verdict in a short, transparent, user-friendly\
+            \ way.\n\nYou do not calculate prices.\nYou do not generate fairLow, fairMid,\
+            \ or fairHigh.\nYou do not change backendVerdict.\nYou do not approve\
+            \ reports.\nYou do not blame sellers.\nSpring/backend is the source of\
+            \ truth for price ranges and verdicts.\n\nUse only the price values provided\
+            \ in the input context.\nIf data confidence is low or sampleCount is low,\
+            \ clearly say the result is for reference only.\nIf market comparison\
+            \ data is provided, mention it cautiously as a comparison, not a guaranteed\
+            \ better price.\nIf optional phrase is not requested, optionalBargainPhrase\
+            \ must be an empty string.\n\nNever use:\nscam, fraud, rip-off, cheating,\
+            \ bad seller, do not buy,\n바가지, 사기, 속았다, 사지 마세요, 상인이 잘못했습니다.\n\nUse neutral\
+            \ wording:\n- Higher than usual\n- Within the fair range\n- Below the\
+            \ recent reference range\n- Compare with nearby sellers\n- Check product\
+            \ variant or unit\n- Based on field survey data\n- Use as reference when\
+            \ data is limited\n\nReturn valid JSON only.\nDo not wrap JSON in markdown.\n\
+            Do not include explanations outside JSON.\n\nOutput JSON schema:\n{\n\
+            \  \"backendVerdictEcho\": \"VERY_EXPENSIVE\",\n  \"insightText\": \"\
+            This quoted price is higher than the recent reference range for Tomato\
+            \ at Chorsu Bazaar.\",\n  \"confidenceExplanation\": \"The current field\
+            \ survey data is limited, so use this result as reference.\",\n  \"sourceSummary\"\
+            : \"Based on 2026-06-05 field survey data from Chorsu Bazaar.\",\n  \"\
+            marketComparisonInsight\": \"Korzinka reference prices may differ by variety\
+            \ such as red or pink greenhouse tomato.\",\n  \"recommendedAction\":\
+            \ \"Compare with nearby sellers and check whether this is a premium greenhouse\
+            \ tomato.\",\n  \"optionalBargainPhrase\": \"\"\n}"
+        - id: 52d6ddaf-83a0-416a-b519-0c86a04a3237
+          role: user
+          text: 'Backend price context:
+
+            {{{#1781523253597.priceContextText#}}
+
+
+            Retrieved knowledge:
+
+            {{{#context#}}
+
+
+            Instructions:
+
+            - Preserve backendVerdict exactly as backendVerdictEcho.
+
+            - Do not create new price numbers.
+
+            - Do not change fairLow, fairMid, or fairHigh.
+
+            - Do not say the AI calculated the fair price.
+
+            - Do not blame sellers.
+
+            - Return only JSON.'
+        selected: false
+        title: 'LLM: Generate Insight'
+        type: llm
+        vision:
+          enabled: false
+      height: 88
+      id: '1781523620710'
+      position:
+        x: 837.4285714285714
+        y: 358.1666666666667
+      positionAbsolute:
+        x: 837.4285714285714
+        y: 358.1666666666667
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "function safeParseJson(text) {\n  if (!text) return null;\n\n  let\
+          \ cleaned = String(text).trim();\n\n  cleaned = cleaned\n    .replace(/^```json\\\
+          s*/i, \"\")\n    .replace(/^```\\s*/i, \"\")\n    .replace(/```$/i, \"\"\
+          )\n    .trim();\n\n  try {\n    return JSON.parse(cleaned);\n  } catch (e)\
+          \ {\n    return null;\n  }\n}\n\nfunction hasForbiddenWords(text) {\n  const\
+          \ value = String(text || \"\");\n  const patterns = [\n    /scam/i,\n  \
+          \  /fraud/i,\n    /rip-off/i,\n    /cheating/i,\n    /bad seller/i,\n  \
+          \  /do not buy/i,\n    /바가지/g,\n    /사기/g,\n    /속았다/g,\n    /사지 마세요/g,\n\
+          \    /상인이 잘못/g\n  ];\n  return patterns.some((p) => p.test(value));\n}\n\
+          \nfunction removeForbiddenWords(text) {\n  if (!text) return \"\";\n\n \
+          \ const replacements = [\n    [/scam/gi, \"unusual pricing\"],\n    [/fraud/gi,\
+          \ \"pricing difference\"],\n    [/rip-off/gi, \"higher than usual\"],\n\
+          \    [/cheating/gi, \"pricing difference\"],\n    [/bad seller/gi, \"pricing\
+          \ difference\"],\n    [/do not buy/gi, \"compare with nearby sellers\"],\n\
+          \    [/바가지/g, \"높은 편\"],\n    [/사기/g, \"가격 차이\"],\n    [/속았다/g, \"다시 확인\"\
+          ],\n    [/사지 마세요/g, \"다른 가게와 비교해 보세요\"],\n    [/상인이 잘못했습니다/g, \"품목, 품질,\
+          \ 시장 상황에 따라 가격 차이가 있을 수 있습니다\"],\n    [/상인이 잘못/g, \"시장 상황에 따라 가격 차이가 있을\
+          \ 수 있음\"]\n  ];\n\n  let output = String(text);\n  for (const [pattern,\
+          \ replacement] of replacements) {\n    output = output.replace(pattern,\
+          \ replacement);\n  }\n  return output;\n}\n\nfunction main({\n  llmText,\n\
+          \  isValidContext,\n  invalidReason,\n  backendVerdict,\n  priceContextText,\n\
+          \  lowDataWarning,\n  lowDataWarningText,\n  includeOptionalPhraseText,\n\
+          \  locale,\n  productName,\n  marketName,\n  surveyDate\n}) {\n  const parsed\
+          \ = safeParseJson(llmText) || {};\n  const expectedVerdict = String(backendVerdict\
+          \ || \"UNKNOWN\").trim().toUpperCase();\n\n  const isValid =\n    isValidContext\
+          \ === true ||\n    String(isValidContext || \"\").toLowerCase() === \"true\"\
+          ;\n\n  const isLowData =\n    lowDataWarning === true ||\n    String(lowDataWarningText\
+          \ || \"\").toLowerCase() === \"true\";\n\n  const includeOptional =\n  \
+          \  String(includeOptionalPhraseText || \"false\").toLowerCase() === \"true\"\
+          ;\n\n  const changedBackendVerdict =\n    parsed.backendVerdictEcho &&\n\
+          \    String(parsed.backendVerdictEcho).trim().toUpperCase() !== expectedVerdict;\n\
+          \n  const textBlob = [\n    parsed.insightText,\n    parsed.confidenceExplanation,\n\
+          \    parsed.sourceSummary,\n    parsed.marketComparisonInsight,\n    parsed.recommendedAction,\n\
+          \    parsed.optionalBargainPhrase\n  ].join(\" \");\n\n  const hadSellerBlame\
+          \ = hasForbiddenWords(textBlob);\n\n  const fallbackSource = surveyDate\n\
+          \    ? `Based on ${surveyDate} field survey/reference data.`\n    : \"Based\
+          \ on backend price data.\";\n\n  let insightText = parsed.insightText ||\
+          \ \"This price was checked against the current backend fair range.\";\n\
+          \  let confidenceExplanation =\n    parsed.confidenceExplanation || \"Use\
+          \ this result as reference and compare with nearby sellers.\";\n  let sourceSummary\
+          \ = parsed.sourceSummary || fallbackSource;\n  let marketComparisonInsight\
+          \ =\n    parsed.marketComparisonInsight || \"Market comparison may vary\
+          \ by product variety, unit, and data availability.\";\n  let recommendedAction\
+          \ =\n    parsed.recommendedAction || \"Compare with nearby sellers and check\
+          \ product variety or unit.\";\n  let optionalBargainPhrase = includeOptional\
+          \ ? (parsed.optionalBargainPhrase || \"\") : \"\";\n\n  if (!isValid) {\n\
+          \    insightText = \"We could not generate a reliable price insight from\
+          \ the provided context.\";\n    confidenceExplanation = invalidReason ||\
+          \ \"Missing backend price context.\";\n    sourceSummary = \"Backend price\
+          \ context is required.\";\n    marketComparisonInsight = \"\";\n    recommendedAction\
+          \ = \"Check product, market, unit, and fair range data before using this\
+          \ result.\";\n    optionalBargainPhrase = \"\";\n  }\n\n  if (isLowData\
+          \ && !confidenceExplanation.toLowerCase().includes(\"reference\")) {\n \
+          \   confidenceExplanation =\n      `${confidenceExplanation} Current data\
+          \ is limited, so use this as reference only.`;\n  }\n\n  insightText = removeForbiddenWords(insightText);\n\
+          \  confidenceExplanation = removeForbiddenWords(confidenceExplanation);\n\
+          \  sourceSummary = removeForbiddenWords(sourceSummary);\n  marketComparisonInsight\
+          \ = removeForbiddenWords(marketComparisonInsight);\n  recommendedAction\
+          \ = removeForbiddenWords(recommendedAction);\n  optionalBargainPhrase =\
+          \ removeForbiddenWords(optionalBargainPhrase);\n\n  const safetyFlags =\
+          \ {\n    usedOnlyBackendPrices: true,\n    changedBackendVerdict: Boolean(changedBackendVerdict),\n\
+          \    containsSellerBlame: false\n  };\n\n  return {\n    insightText,\n\
+          \    confidenceExplanation,\n    sourceSummary,\n    marketComparisonInsight,\n\
+          \    recommendedAction,\n    optionalBargainPhrase,\n    safetyFlagsJson:\
+          \ JSON.stringify(safetyFlags),\n    usedOnlyBackendPrices: true,\n    changedBackendVerdict:\
+          \ Boolean(changedBackendVerdict),\n    containsSellerBlame: false,\n   \
+          \ aiStatus: isValid ? \"OK\" : \"INVALID_CONTEXT\"\n  };\n}"
+        code_language: javascript
+        outputs:
+          aiStatus:
+            children: null
+            type: string
+          changedBackendVerdict:
+            children: null
+            type: boolean
+          confidenceExplanation:
+            children: null
+            type: string
+          containsSellerBlame:
+            children: null
+            type: boolean
+          insightText:
+            children: null
+            type: string
+          marketComparisonInsight:
+            children: null
+            type: string
+          optionalBargainPhrase:
+            children: null
+            type: string
+          recommendedAction:
+            children: null
+            type: string
+          safetyFlagsJson:
+            children: null
+            type: string
+          sourceSummary:
+            children: null
+            type: string
+          usedOnlyBackendPrices:
+            children: null
+            type: boolean
+        selected: false
+        title: 'Code: Safety Filter'
+        type: code
+        variables:
+        - value_selector:
+          - '1781523620710'
+          - text
+          value_type: string
+          variable: llmText
+        - value_selector:
+          - '1781523253597'
+          - isValidContext
+          value_type: boolean
+          variable: isValidContext
+        - value_selector:
+          - '1781523253597'
+          - invalidReason
+          value_type: string
+          variable: invalidReason
+        - value_selector:
+          - '1781523253597'
+          - normalizedVerdict
+          value_type: string
+          variable: backendVerdict
+        - value_selector:
+          - '1781523253597'
+          - priceContextText
+          value_type: string
+          variable: priceContextText
+        - value_selector:
+          - '1781523253597'
+          - lowDataWarning
+          value_type: boolean
+          variable: lowDataWarning
+        - value_selector:
+          - '1781523253597'
+          - lowDataWarningText
+          value_type: string
+          variable: lowDataWarningText
+        - value_selector:
+          - '1781523253597'
+          - includeOptionalPhraseText
+          value_type: string
+          variable: includeOptionalPhraseText
+        - value_selector:
+          - '1781522975143'
+          - locale
+          value_type: string
+          variable: locale
+        - value_selector:
+          - '1781522975143'
+          - productName
+          value_type: string
+          variable: productName
+        - value_selector:
+          - '1781522975143'
+          - marketName
+          value_type: string
+          variable: marketName
+        - value_selector:
+          - '1781522975143'
+          - surveyDate
+          value_type: string
+          variable: surveyDate
+      height: 52
+      id: '1781523685581'
+      position:
+        x: 1098
+        y: 358.1666666666667
+      positionAbsolute:
+        x: 1098
+        y: 358.1666666666667
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        outputs:
+        - value_selector:
+          - '1781523685581'
+          - insightText
+          value_type: string
+          variable: insightText
+        - value_selector:
+          - '1781523685581'
+          - confidenceExplanation
+          value_type: string
+          variable: confidenceExplanation
+        - value_selector:
+          - '1781523685581'
+          - sourceSummary
+          value_type: string
+          variable: sourceSummary
+        - value_selector:
+          - '1781523685581'
+          - marketComparisonInsight
+          value_type: string
+          variable: marketComparisonInsight
+        - value_selector:
+          - '1781523685581'
+          - recommendedAction
+          value_type: string
+          variable: recommendedAction
+        - value_selector:
+          - '1781523685581'
+          - optionalBargainPhrase
+          value_type: string
+          variable: optionalBargainPhrase
+        - value_selector:
+          - '1781523685581'
+          - safetyFlagsJson
+          value_type: string
+          variable: safetyFlagsJson
+        - value_selector:
+          - '1781523685581'
+          - usedOnlyBackendPrices
+          value_type: boolean
+          variable: usedOnlyBackendPrices
+        - value_selector:
+          - '1781523685581'
+          - changedBackendVerdict
+          value_type: boolean
+          variable: changedBackendVerdict
+        - value_selector:
+          - '1781523685581'
+          - containsSellerBlame
+          value_type: boolean
+          variable: containsSellerBlame
+        - value_selector:
+          - '1781523685581'
+          - aiStatus
+          value_type: string
+          variable: aiStatus
+        selected: false
+        title: Output
+        type: end
+      height: 355
+      id: '1781523944234'
+      position:
+        x: 1366.5272048524246
+        y: 358.1666666666667
+      positionAbsolute:
+        x: 1366.5272048524246
+        y: 358.1666666666667
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: 215.48343564561026
+      y: -106.1566970626368
+      zoom: 0.8618010807962101
+  rag_pipeline_variables: []

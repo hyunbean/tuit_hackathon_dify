@@ -1,0 +1,1068 @@
+app:
+  description: Inspect user-submitted price reports for anomaly risk, unit mismatch,
+    and review necessity. This workflow never approves reports automatically and does
+    not calculate fair prices.
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: workflow
+  name: BozorCheck_Report_Inspector_v1
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/cohere:0.0.16@b116712763a1ffb456565684a4406a3dd74f365d20ac19ecbaa0f62e85f1b7d4
+    version: null
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.4.3@84d4aae2c55724f6cdaecfadceed061d7e6b6693ae8945ea2dcd155f280743ef
+    version: null
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: code
+      id: 1781519533429-source-1781519824055-target
+      source: '1781519533429'
+      sourceHandle: source
+      target: '1781519824055'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: if-else
+      id: 1781519824055-source-1781520073057-target
+      source: '1781519824055'
+      sourceHandle: source
+      target: '1781520073057'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: code
+      id: 1781520073057-true-1781520141192-target
+      source: '1781520073057'
+      sourceHandle: 'true'
+      target: '1781520141192'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: code
+      id: 1781520073057-false-1781520293771-target
+      source: '1781520073057'
+      sourceHandle: 'false'
+      target: '1781520293771'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: knowledge-retrieval
+      id: 1781520293771-source-1781520802425-target
+      source: '1781520293771'
+      sourceHandle: source
+      target: '1781520802425'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1781520802425-source-1781520852952-target
+      source: '1781520802425'
+      sourceHandle: source
+      target: '1781520852952'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: 1781520852952-source-1781521660894-target
+      source: '1781520852952'
+      sourceHandle: source
+      target: '1781521660894'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: end
+      id: 1781521660894-source-1781521890198-target
+      source: '1781521660894'
+      sourceHandle: source
+      target: '1781521890198'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: end
+      id: 1781520141192-source-1781522292852-target
+      source: '1781520141192'
+      sourceHandle: source
+      target: '1781522292852'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: Start
+        type: start
+        variables:
+        - default: rpt-001
+          hint: ''
+          label: reportId
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: reportId
+        - default: guruch
+          hint: ''
+          label: rawProductName
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: rawProductName
+        - default: RICE
+          hint: ''
+          label: productCode
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: productCode
+        - default: TASHKENT_CHORSU
+          hint: ''
+          label: marketCode
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: marketCode
+        - default: '18000'
+          hint: ''
+          label: submittedPrice
+          options: []
+          placeholder: ''
+          required: true
+          type: number
+          variable: submittedPrice
+        - default: KG
+          hint: ''
+          label: submittedUnit
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: submittedUnit
+        - default: '13500'
+          hint: ''
+          label: recentFairLow
+          options: []
+          placeholder: ''
+          required: true
+          type: number
+          variable: recentFairLow
+        - default: '15000'
+          hint: ''
+          label: recentFairMid
+          options: []
+          placeholder: ''
+          required: true
+          type: number
+          variable: recentFairMid
+        - default: '16500'
+          hint: ''
+          label: recentFairHigh
+          options: []
+          placeholder: ''
+          required: true
+          type: number
+          variable: recentFairHigh
+        - default: '0.72'
+          hint: ''
+          label: confidenceScore
+          options: []
+          placeholder: ''
+          required: false
+          type: number
+          variable: confidenceScore
+        - default: '3'
+          hint: ''
+          label: sampleCount
+          options: []
+          placeholder: ''
+          required: false
+          type: number
+          variable: sampleCount
+        - default: '{"FIELD_SURVEY":3}'
+          hint: ''
+          label: sourceBreakdownJson
+          options: []
+          placeholder: ''
+          required: false
+          type: paragraph
+          variable: sourceBreakdownJson
+        - default: '2026-06-05'
+          hint: ''
+          label: surveyDate
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: surveyDate
+        - default: en
+          hint: ''
+          label: locale
+          options: []
+          placeholder: ''
+          required: false
+          type: text-input
+          variable: locale
+        - default: '0.91'
+          hint: ''
+          label: matchConfidence
+          options: []
+          placeholder: ''
+          required: false
+          type: number
+          variable: matchConfidence
+      height: 474
+      id: '1781519533429'
+      position:
+        x: 161.5575880569191
+        y: 266.7434921166845
+      positionAbsolute:
+        x: 161.5575880569191
+        y: 266.7434921166845
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "function toNumber(value, fallback = 0) {\n  const n = Number(value);\n\
+          \  return Number.isFinite(n) ? n : fallback;\n}\n\nfunction main({\n  productCode,\n\
+          \  marketCode,\n  submittedPrice,\n  submittedUnit,\n  recentFairLow,\n\
+          \  recentFairMid,\n  recentFairHigh,\n  matchConfidence\n}) {\n  const code\
+          \ = String(productCode || \"\").trim().toUpperCase();\n  const market =\
+          \ String(marketCode || \"\").trim().toUpperCase();\n  const unit = String(submittedUnit\
+          \ || \"\").trim().toUpperCase();\n\n  const price = toNumber(submittedPrice,\
+          \ -1);\n  const fairLow = toNumber(recentFairLow, 0);\n  const fairMid =\
+          \ toNumber(recentFairMid, 0);\n  const fairHigh = toNumber(recentFairHigh,\
+          \ 0);\n  const match = toNumber(matchConfidence, 1);\n\n  let isValid =\
+          \ true;\n  let invalidReason = \"\";\n\n  if (!code || code === \"UNKNOWN\"\
+          ) {\n    isValid = false;\n    invalidReason = \"Unknown or missing product\
+          \ code.\";\n  } else if (!market) {\n    isValid = false;\n    invalidReason\
+          \ = \"Missing market code.\";\n  } else if (!unit) {\n    isValid = false;\n\
+          \    invalidReason = \"Missing submitted unit.\";\n  } else if (price <=\
+          \ 0) {\n    isValid = false;\n    invalidReason = \"Submitted price must\
+          \ be greater than zero.\";\n  } else if (fairLow <= 0 || fairMid <= 0 ||\
+          \ fairHigh <= 0) {\n    isValid = false;\n    invalidReason = \"Missing\
+          \ recent fair price range.\";\n  }\n\n  if (match < 0.65) {\n    isValid\
+          \ = false;\n    invalidReason = \"Low product match confidence. Human review\
+          \ required.\";\n  }\n\n  return {\n    isValid,\n    invalidReason,\n  \
+          \  normalizedProductCode: code || \"UNKNOWN\",\n    normalizedUnitCode:\
+          \ unit || \"UNKNOWN\",\n    submittedPriceNumber: price,\n    fairLowNumber:\
+          \ fairLow,\n    fairMidNumber: fairMid,\n    fairHighNumber: fairHigh,\n\
+          \    matchConfidenceNumber: match\n  };\n}"
+        code_language: javascript
+        outputs:
+          fairHighNumber:
+            children: null
+            type: number
+          fairLowNumber:
+            children: null
+            type: number
+          fairMidNumber:
+            children: null
+            type: number
+          invalidReason:
+            children: null
+            type: string
+          isValid:
+            children: null
+            type: boolean
+          matchConfidenceNumber:
+            children: null
+            type: number
+          normalizedProductCode:
+            children: null
+            type: string
+          normalizedUnitCode:
+            children: null
+            type: string
+          submittedPriceNumber:
+            children: null
+            type: number
+        selected: false
+        title: 'Code: Basic Validation'
+        type: code
+        variables:
+        - value_selector:
+          - '1781519533429'
+          - productCode
+          value_type: string
+          variable: productCode
+        - value_selector:
+          - '1781519533429'
+          - marketCode
+          value_type: string
+          variable: marketCode
+        - value_selector:
+          - '1781519533429'
+          - submittedPrice
+          value_type: number
+          variable: submittedPrice
+        - value_selector:
+          - '1781519533429'
+          - submittedUnit
+          value_type: string
+          variable: submittedUnit
+        - value_selector:
+          - '1781519533429'
+          - recentFairLow
+          value_type: number
+          variable: recentFairLow
+        - value_selector:
+          - '1781519533429'
+          - recentFairMid
+          value_type: number
+          variable: recentFairMid
+        - value_selector:
+          - '1781519533429'
+          - recentFairHigh
+          value_type: number
+          variable: recentFairHigh
+        - value_selector:
+          - '1781519533429'
+          - matchConfidence
+          value_type: number
+          variable: matchConfidence
+      height: 53
+      id: '1781519824055'
+      position:
+        x: 424.5018416634649
+        y: 287.7434921166845
+      positionAbsolute:
+        x: 424.5018416634649
+        y: 287.7434921166845
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: 4cf9da4e-3e5d-4a1e-99bb-00b06899340a
+            value: false
+            varType: boolean
+            variable_selector:
+            - '1781519824055'
+            - isValid
+          id: 'true'
+          logical_operator: and
+        selected: false
+        title: 'IF/ELSE: Invalid Report?'
+        type: if-else
+      height: 149
+      id: '1781520073057'
+      position:
+        x: 695.5946695709707
+        y: 287.7434921166845
+      positionAbsolute:
+        x: 695.5946695709707
+        y: 287.7434921166845
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "function main({ invalidReason, normalizedProductCode, submittedPriceNumber,\
+          \ locale }) {\n  const reason = invalidReason || \"Invalid report input.\"\
+          ;\n  const isKorean = String(locale || \"\").toLowerCase().startsWith(\"\
+          ko\");\n\n  const userMessage = isKorean\n    ? \"제보가 접수되었습니다. 검토 후 시세에\
+          \ 반영됩니다.\"\n    : \"Your report was received and will be reviewed before\
+          \ being used.\";\n\nreturn {\n  normalizedProductCode: normalizedProductCode\
+          \ || \"UNKNOWN\",\n  riskLevel: \"HIGH\",\n  statusSuggestion: \"REJECT_CANDIDATE\"\
+          ,\n  needsHumanReview: true,\n  anomalyReasonsJson: JSON.stringify([reason]),\n\
+          \  reviewNote: `Reject candidate: ${reason} Submitted price: ${submittedPriceNumber}`,\n\
+          \  userMessage,\n  operatorChecklistJson: JSON.stringify([\n    \"Check\
+          \ required input fields.\",\n    \"Check product normalization result.\"\
+          ,\n    \"Do not use this report without manual review.\"\n  ])\n};\n}"
+        code_language: javascript
+        outputs:
+          anomalyReasonsJson:
+            children: null
+            type: boolean
+          needsHumanReview:
+            children: null
+            type: string
+          normalizedProductCode:
+            children: null
+            type: string
+          operatorChecklistJson:
+            children: null
+            type: string
+          result:
+            children: null
+            type: string
+          reviewNote:
+            children: null
+            type: string
+          riskLevel:
+            children: null
+            type: string
+          statusSuggestion:
+            children: null
+            type: string
+          userMessage:
+            children: null
+            type: string
+        selected: false
+        title: 'Code: Build Reject Candidate'
+        type: code
+        variables:
+        - value_selector:
+          - '1781519824055'
+          - invalidReason
+          value_type: string
+          variable: invalidReason
+        - value_selector:
+          - '1781519824055'
+          - normalizedProductCode
+          value_type: string
+          variable: normalizedProductCode
+        - value_selector:
+          - '1781519824055'
+          - submittedPriceNumber
+          value_type: number
+          variable: submittedPriceNumber
+        - value_selector:
+          - '1781519533429'
+          - locale
+          value_type: string
+          variable: locale
+      height: 53
+      id: '1781520141192'
+      position:
+        x: 965.7726325832398
+        y: 287.7434921166845
+      positionAbsolute:
+        x: 965.7726325832398
+        y: 287.7434921166845
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "function toNumber(value, fallback = 0) {\n  const n = Number(value);\n\
+          \  return Number.isFinite(n) ? n : fallback;\n}\n\nfunction main({\n  normalizedProductCode,\n\
+          \  normalizedUnitCode,\n  submittedPriceNumber,\n  fairLowNumber,\n  fairMidNumber,\n\
+          \  fairHighNumber,\n  confidenceScore,\n  sampleCount,\n  surveyDate,\n\
+          \  sourceBreakdownJson\n}) {\n  const price = toNumber(submittedPriceNumber,\
+          \ 0);\n  const low = toNumber(fairLowNumber, 0);\n  const mid = toNumber(fairMidNumber,\
+          \ 0);\n  const high = toNumber(fairHighNumber, 0);\n  const confidence =\
+          \ toNumber(confidenceScore, 0);\n  const samples = toNumber(sampleCount,\
+          \ 0);\n\n  let riskLevel = \"LOW\";\n  let statusSuggestion = \"PENDING\"\
+          ;\n  let needsHumanReview = false;\n  const reasons = [];\n\n  const ratioHigh\
+          \ = high > 0 ? price / high : 0;\n  const ratioLow = low > 0 ? price / low\
+          \ : 0;\n  const lowData = confidence < 0.5 || samples < 3;\n\n  if (price\
+          \ > high * 2) {\n    riskLevel = \"HIGH\";\n    statusSuggestion = \"FLAGGED\"\
+          ;\n    needsHumanReview = true;\n    reasons.push(\"Submitted price is far\
+          \ above the recent fair range.\");\n    reasons.push(\"It may be a bulk\
+          \ price, premium variant, or input error.\");\n  } else if (price < low\
+          \ * 0.5) {\n    riskLevel = \"HIGH\";\n    statusSuggestion = \"FLAGGED\"\
+          ;\n    needsHumanReview = true;\n    reasons.push(\"Submitted price is far\
+          \ below the recent fair range.\");\n    reasons.push(\"It may be a unit\
+          \ mismatch, discount, or input error.\");\n  } else if (price > high) {\n\
+          \    riskLevel = \"MEDIUM\";\n    statusSuggestion = \"REVIEW_REQUIRED\"\
+          ;\n    needsHumanReview = true;\n    reasons.push(\"Submitted price is above\
+          \ the recent fair range.\");\n  } else if (price < low) {\n    riskLevel\
+          \ = \"MEDIUM\";\n    statusSuggestion = \"REVIEW_REQUIRED\";\n    needsHumanReview\
+          \ = true;\n    reasons.push(\"Submitted price is below the recent fair range.\"\
+          );\n  } else {\n    riskLevel = \"LOW\";\n    statusSuggestion = \"PENDING\"\
+          ;\n    needsHumanReview = false;\n    reasons.push(\"Submitted price is\
+          \ within the recent fair range.\");\n  }\n\n  if (lowData) {\n    reasons.push(\"\
+          Recent data is limited, so this report should be used as reference data.\"\
+          );\n  }\n\n  const needsHumanReviewText = needsHumanReview ? \"true\" :\
+          \ \"false\";\n  const lowDataWarningText = lowData ? \"true\" : \"false\"\
+          ;\n  const anomalyReasonsText = reasons.join(\"; \");\n\n  const ruleSummary\
+          \ = [\n    `productCode=${normalizedProductCode}`,\n    `unit=${normalizedUnitCode}`,\n\
+          \    `submittedPrice=${price}`,\n    `fairRange=${low}-${high}`,\n    `fairMid=${mid}`,\n\
+          \    `confidenceScore=${confidence}`,\n    `sampleCount=${samples}`,\n \
+          \   `surveyDate=${surveyDate || \"\"}`,\n    `sourceBreakdown=${sourceBreakdownJson\
+          \ || \"\"}`,\n    `riskLevel=${riskLevel}`,\n    `statusSuggestion=${statusSuggestion}`,\n\
+          \    `needsHumanReview=${needsHumanReviewText}`,\n    `lowDataWarning=${lowDataWarningText}`\n\
+          \  ].join(\"\\n\");\n\n  const reportInspectionContext = [\n    `Product\
+          \ code: ${normalizedProductCode}`,\n    `Submitted unit: ${normalizedUnitCode}`,\n\
+          \    `Submitted price: ${price}`,\n    `Recent fair range: ${low} - ${high}`,\n\
+          \    `Recent fair midpoint: ${mid}`,\n    `Risk level: ${riskLevel}`,\n\
+          \    `Status suggestion: ${statusSuggestion}`,\n    `Needs human review:\
+          \ ${needsHumanReviewText}`,\n    `Low data warning: ${lowDataWarningText}`,\n\
+          \    `Anomaly reasons: ${anomalyReasonsText}`,\n    `Confidence score: ${confidence}`,\n\
+          \    `Sample count: ${samples}`,\n    `Survey date: ${surveyDate || \"not\
+          \ provided\"}`,\n    `Source breakdown: ${sourceBreakdownJson || \"not provided\"\
+          }`\n  ].join(\"\\n\");\n\n  return {\n    normalizedProductCode: normalizedProductCode\
+          \ || \"UNKNOWN\",\n    riskLevel,\n    statusSuggestion,\n    needsHumanReview,\n\
+          \    needsHumanReviewText,\n    anomalyReasonsJson: JSON.stringify(reasons),\n\
+          \    anomalyReasonsText,\n    ruleSummary,\n    lowDataWarning: lowData,\n\
+          \    lowDataWarningText,\n    priceRatioToFairHigh: ratioHigh,\n    priceRatioToFairLow:\
+          \ ratioLow,\n    reportInspectionContext\n  };\n}"
+        code_language: javascript
+        outputs:
+          anomalyReasonsJson:
+            children: null
+            type: string
+          anomalyReasonsText:
+            children: null
+            type: string
+          lowDataWarning:
+            children: null
+            type: boolean
+          lowDataWarningText:
+            children: null
+            type: string
+          needsHumanReview:
+            children: null
+            type: boolean
+          needsHumanReviewText:
+            children: null
+            type: string
+          normalizedProductCode:
+            children: null
+            type: string
+          priceRatioToFairHigh:
+            children: null
+            type: number
+          priceRatioToFairLow:
+            children: null
+            type: number
+          reportInspectionContext:
+            children: null
+            type: string
+          riskLevel:
+            children: null
+            type: string
+          ruleSummary:
+            children: null
+            type: string
+          statusSuggestion:
+            children: null
+            type: string
+        selected: false
+        title: 'Code: Rule Evaluation'
+        type: code
+        variables:
+        - value_selector:
+          - '1781519824055'
+          - normalizedProductCode
+          value_type: string
+          variable: normalizedProductCode
+        - value_selector:
+          - '1781519824055'
+          - normalizedUnitCode
+          value_type: string
+          variable: normalizedUnitCode
+        - value_selector:
+          - '1781519824055'
+          - submittedPriceNumber
+          value_type: number
+          variable: submittedPriceNumber
+        - value_selector:
+          - '1781519824055'
+          - fairLowNumber
+          value_type: number
+          variable: fairLowNumber
+        - value_selector:
+          - '1781519824055'
+          - fairMidNumber
+          value_type: number
+          variable: fairMidNumber
+        - value_selector:
+          - '1781519824055'
+          - fairHighNumber
+          value_type: number
+          variable: fairHighNumber
+        - value_selector:
+          - '1781519533429'
+          - confidenceScore
+          value_type: number
+          variable: confidenceScore
+        - value_selector:
+          - '1781519533429'
+          - sampleCount
+          value_type: number
+          variable: sampleCount
+        - value_selector:
+          - '1781519533429'
+          - surveyDate
+          value_type: string
+          variable: surveyDate
+        - value_selector:
+          - '1781519533429'
+          - sourceBreakdownJson
+          value_type: string
+          variable: sourceBreakdownJson
+      height: 53
+      id: '1781520293771'
+      position:
+        x: 951.87993013934
+        y: 565.3981213256981
+      positionAbsolute:
+        x: 951.87993013934
+        y: 565.3981213256981
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        dataset_ids: []
+        multiple_retrieval_config:
+          reranking_enable: true
+          reranking_mode: reranking_model
+          reranking_model:
+            model: rerank-multilingual-v3.0
+            provider: langgenius/cohere/cohere
+          top_k: 4
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1781520293771'
+        - ruleSummary
+        retrieval_mode: multiple
+        selected: false
+        title: 'Knowledge Retrieval: Safety Copy Guide'
+        type: knowledge-retrieval
+      height: 91
+      id: '1781520802425'
+      position:
+        x: 1213.5310568374066
+        y: 565.3981213256981
+      positionAbsolute:
+        x: 1213.5310568374066
+        y: 565.3981213256981
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1781520802425'
+          - result
+        model:
+          completion_params:
+            temperature: 0.1
+          mode: chat
+          name: gpt-4o-mini
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: a137a7a5-e621-45d1-8d2f-b3ac394600c8
+          role: system
+          text: "You are BozorCheck AI Report Inspector.\n\nYour job is to write a\
+            \ short neutral review note and user-facing message for a submitted bazaar\
+            \ price report.\n\nYou do not approve reports.\nYou do not reject reports\
+            \ as a final decision.\nYou do not calculate fair prices.\nYou do not\
+            \ change riskLevel or statusSuggestion from the rule evaluation.\nSpring/backend\
+            \ and operations team are the source of truth.\n\nNever return APPROVED.\n\
+            Allowed statusSuggestion values:\nPENDING, REVIEW_REQUIRED, FLAGGED, REJECT_CANDIDATE\n\
+            \nNever blame sellers.\nNever use words like scam, fraud, rip-off, cheating,\
+            \ bad seller, 바가지, 사기, 속았다, 사지 마세요, 상인이 잘못했습니다.\n\nUse neutral wording:\n\
+            - Higher than usual\n- Below the recent reference range\n- Compare with\
+            \ nearby sellers\n- Check unit or product variant\n- Reports stay under\
+            \ review before going live\n- Use as reference when data is limited\n\n\
+            Return valid JSON only.\nDo not wrap JSON in markdown.\n\nOutput JSON\
+            \ schema:\n{\n  \"reviewNote\": \"This report is above the recent reference\
+            \ range. Check if it is a premium variant, bulk price, or input error.\"\
+            ,\n  \"userMessage\": \"Your report was received and will be reviewed\
+            \ before it is used.\",\n  \"operatorChecklist\": [\n    \"Check product\
+            \ variant.\",\n    \"Check submitted unit.\",\n    \"Compare with nearby\
+            \ observations.\"\n  ]\n}"
+        - id: 5403a6b5-8d28-4832-9f4b-dfb3e3c16476
+          role: user
+          text: 'Report input:
+
+            reportId: {{{#1781519533429.reportId#}}
+
+            rawProductName: {{{#1781519533429.rawProductName#}}
+
+            productCode: {{{#1781519533429.productCode#}}
+
+            marketCode: {{{#1781519533429.marketCode#}}
+
+            submittedPrice: {{{#1781519533429.submittedPrice#}}
+
+            submittedUnit: {{{#1781519533429.submittedUnit#}}
+
+            surveyDate: {{{#1781519533429.surveyDate#}}
+
+
+            Rule evaluation:
+
+            {{{#1781520293771.reportInspectionContext#}}
+
+
+            Retrieved safety/copy knowledge:
+
+            {{{#context#}}
+
+
+            Locale:
+
+            {{{#1781519533429.locale#}}
+
+
+            Return only JSON.
+
+            Do not change riskLevel.
+
+            Do not change statusSuggestion.
+
+            Do not use APPROVED.'
+        selected: false
+        title: 'LLM: Review Note'
+        type: llm
+        vision:
+          enabled: false
+      height: 89
+      id: '1781520852952'
+      position:
+        x: 1480.4054871224175
+        y: 565.3981213256981
+      positionAbsolute:
+        x: 1480.4054871224175
+        y: 565.3981213256981
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "function safeParseJson(text) {\n  if (!text) return null;\n\n  let\
+          \ cleaned = String(text).trim();\n\n  cleaned = cleaned\n    .replace(/^```json\\\
+          s*/i, \"\")\n    .replace(/^```\\s*/i, \"\")\n    .replace(/```$/i, \"\"\
+          )\n    .trim();\n\n  try {\n    return JSON.parse(cleaned);\n  } catch (e)\
+          \ {\n    return null;\n  }\n}\n\nfunction removeForbiddenWords(text) {\n\
+          \  if (!text) return \"\";\n\n  const replacements = [\n    [/scam/gi, \"\
+          unusual\"],\n    [/fraud/gi, \"unusual\"],\n    [/rip-off/gi, \"higher than\
+          \ usual\"],\n    [/cheating/gi, \"pricing difference\"],\n    [/bad seller/gi,\
+          \ \"pricing difference\"],\n    [/바가지/g, \"높은 편\"],\n    [/사기/g, \"가격 차이\"\
+          ],\n    [/속았다/g, \"다시 확인\"],\n    [/사지 마세요/g, \"품질과 가격을 한 번 더 확인해 보세요\"\
+          ],\n    [/상인이 잘못했습니다/g, \"품목, 품질, 시장 상황에 따라 가격 차이가 있을 수 있습니다\"]\n  ];\n\n\
+          \  let output = String(text);\n  for (const [pattern, replacement] of replacements)\
+          \ {\n    output = output.replace(pattern, replacement);\n  }\n  return output;\n\
+          }\n\nfunction normalizeStatus(status) {\n  const allowed = [\"PENDING\"\
+          , \"REVIEW_REQUIRED\", \"FLAGGED\", \"REJECT_CANDIDATE\"];\n  const normalized\
+          \ = String(status || \"\").trim().toUpperCase();\n\n  if (normalized ===\
+          \ \"APPROVED\") {\n    return \"REVIEW_REQUIRED\";\n  }\n\n  return allowed.includes(normalized)\
+          \ ? normalized : \"REVIEW_REQUIRED\";\n}\n\nfunction main({\n  llmText,\n\
+          \  normalizedProductCode,\n  riskLevel,\n  statusSuggestion,\n  needsHumanReview,\n\
+          \  anomalyReasonsJson,\n  locale\n}) {\n  const parsed = safeParseJson(llmText)\
+          \ || {};\n\n  const safeStatus = normalizeStatus(statusSuggestion);\n  const\
+          \ safeRisk = [\"LOW\", \"MEDIUM\", \"HIGH\"].includes(String(riskLevel ||\
+          \ \"\").toUpperCase())\n    ? String(riskLevel).toUpperCase()\n    : \"\
+          MEDIUM\";\n\n  let reasons = [];\n  try {\n    reasons = JSON.parse(anomalyReasonsJson\
+          \ || \"[]\");\n  } catch (e) {\n    reasons = [];\n  }\n\n  const isKorean\
+          \ = String(locale || \"\").toLowerCase().startsWith(\"ko\");\n\n  const\
+          \ fallbackReviewNote = reasons.length > 0\n    ? reasons.join(\" \")\n \
+          \   : \"Review this report against recent reference data.\";\n\n  const\
+          \ fallbackUserMessage = isKorean\n    ? \"제보가 접수되었습니다. 검토 후 시세에 반영됩니다.\"\
+          \n    : \"Your report was received and will be reviewed before it is used.\"\
+          ;\n\n  const reviewNote = removeForbiddenWords(parsed.reviewNote || fallbackReviewNote);\n\
+          \  const userMessage = removeForbiddenWords(parsed.userMessage || fallbackUserMessage);\n\
+          \n  const checklist = Array.isArray(parsed.operatorChecklist)\n    ? parsed.operatorChecklist.map((item)\
+          \ => removeForbiddenWords(String(item))).slice(0, 5)\n    : [\n        \"\
+          Check product variant.\",\n        \"Check submitted unit.\",\n        \"\
+          Compare with nearby observations.\"\n      ];\n\n  return {\n    normalizedProductCode:\
+          \ normalizedProductCode || \"UNKNOWN\",\n    riskLevel: safeRisk,\n    statusSuggestion:\
+          \ safeStatus,\n    needsHumanReview: Boolean(needsHumanReview || safeStatus\
+          \ !== \"PENDING\"),\n    anomalyReasonsJson: JSON.stringify(reasons),\n\
+          \    reviewNote,\n    userMessage,\n    operatorChecklistJson: JSON.stringify(checklist)\n\
+          \  };\n}"
+        code_language: javascript
+        outputs:
+          anomalyReasonsJson:
+            children: null
+            type: string
+          needsHumanReview:
+            children: null
+            type: boolean
+          normalizedProductCode:
+            children: null
+            type: string
+          operatorChecklistJson:
+            children: null
+            type: string
+          reviewNote:
+            children: null
+            type: string
+          riskLevel:
+            children: null
+            type: string
+          statusSuggestion:
+            children: null
+            type: string
+          userMessage:
+            children: null
+            type: string
+        selected: false
+        title: 'Code: Validate Output'
+        type: code
+        variables:
+        - value_selector:
+          - '1781520852952'
+          - text
+          value_type: string
+          variable: llmText
+        - value_selector:
+          - '1781520293771'
+          - normalizedProductCode
+          value_type: string
+          variable: normalizedProductCode
+        - value_selector:
+          - '1781520293771'
+          - riskLevel
+          value_type: string
+          variable: riskLevel
+        - value_selector:
+          - '1781520293771'
+          - statusSuggestion
+          value_type: string
+          variable: statusSuggestion
+        - value_selector:
+          - '1781520293771'
+          - needsHumanReview
+          value_type: boolean
+          variable: needsHumanReview
+        - value_selector:
+          - '1781520293771'
+          - anomalyReasonsJson
+          value_type: string
+          variable: anomalyReasonsJson
+        - value_selector:
+          - '1781519533429'
+          - locale
+          value_type: string
+          variable: locale
+      height: 53
+      id: '1781521660894'
+      position:
+        x: 1745.431724764058
+        y: 565.3981213256981
+      positionAbsolute:
+        x: 1745.431724764058
+        y: 565.3981213256981
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        outputs:
+        - value_selector:
+          - '1781521660894'
+          - normalizedProductCode
+          value_type: string
+          variable: normalizedProductCode
+        - value_selector:
+          - '1781521660894'
+          - riskLevel
+          value_type: string
+          variable: riskLevel
+        - value_selector:
+          - '1781521660894'
+          - statusSuggestion
+          value_type: string
+          variable: statusSuggestion
+        - value_selector:
+          - '1781521660894'
+          - needsHumanReview
+          value_type: boolean
+          variable: needsHumanReview
+        - value_selector:
+          - '1781521660894'
+          - anomalyReasonsJson
+          value_type: string
+          variable: anomalyReasonsJson
+        - value_selector:
+          - '1781521660894'
+          - reviewNote
+          value_type: string
+          variable: reviewNote
+        - value_selector:
+          - '1781521660894'
+          - userMessage
+          value_type: string
+          variable: userMessage
+        - value_selector:
+          - '1781521660894'
+          - operatorChecklistJson
+          value_type: string
+          variable: operatorChecklistJson
+        selected: false
+        title: Output
+        type: end
+      height: 271
+      id: '1781521890198'
+      position:
+        x: 2008.7156312939164
+        y: 565.3981213256981
+      positionAbsolute:
+        x: 2008.7156312939164
+        y: 565.3981213256981
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        outputs:
+        - value_selector:
+          - '1781519824055'
+          - normalizedProductCode
+          value_type: string
+          variable: normalizedProductCode
+        - value_selector:
+          - '1781520141192'
+          - riskLevel
+          value_type: string
+          variable: riskLevel
+        - value_selector:
+          - '1781520141192'
+          - statusSuggestion
+          value_type: string
+          variable: statusSuggestion
+        - value_selector:
+          - '1781520141192'
+          - needsHumanReview
+          value_type: string
+          variable: needsHumanReview
+        - value_selector:
+          - '1781520141192'
+          - anomalyReasonsJson
+          value_type: boolean
+          variable: anomalyReasonsJson
+        - value_selector:
+          - '1781520141192'
+          - reviewNote
+          value_type: string
+          variable: reviewNote
+        - value_selector:
+          - '1781520141192'
+          - userMessage
+          value_type: string
+          variable: userMessage
+        - value_selector:
+          - '1781520141192'
+          - operatorChecklistJson
+          value_type: string
+          variable: operatorChecklistJson
+        selected: false
+        title: 'Code: Validate Output'
+        type: end
+      height: 271
+      id: '1781522292852'
+      position:
+        x: 1234.2076284574707
+        y: 273.9591110366418
+      positionAbsolute:
+        x: 1234.2076284574707
+        y: 273.9591110366418
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: -1228.525032181415
+      y: -248.16721803242126
+      zoom: 0.8705505115042028
+  rag_pipeline_variables: []
