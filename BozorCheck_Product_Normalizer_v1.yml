@@ -379,6 +379,13 @@ workflow:
             {{#1781516879358.cleanName#}}
 
 
+            Cleaned unit:
+
+
+            {{#1781516879358.cleanUnitText#}}
+
+
+
             Tokens:
 
             {{#1781516879358.tokensJson#}}

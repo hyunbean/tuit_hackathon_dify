@@ -330,7 +330,7 @@ workflow:
           \ || \"\").trim().toUpperCase();\n\n  const price = toNumber(submittedPrice,\
           \ -1);\n  const fairLow = toNumber(recentFairLow, 0);\n  const fairMid =\
           \ toNumber(recentFairMid, 0);\n  const fairHigh = toNumber(recentFairHigh,\
-          \ 0);\n  const match = toNumber(matchConfidence, 1);\n\n  let isValid =\
+          \ 0);\n  const match = toNumber(matchConfidence, 0);\n\n  let isValid =\
           \ true;\n  let invalidReason = \"\";\n\n  if (!code || code === \"UNKNOWN\"\
           ) {\n    isValid = false;\n    invalidReason = \"Unknown or missing product\
           \ code.\";\n  } else if (!market) {\n    isValid = false;\n    invalidReason\
@@ -340,9 +340,9 @@ workflow:
           \ be greater than zero.\";\n  } else if (fairLow <= 0 || fairMid <= 0 ||\
           \ fairHigh <= 0) {\n    isValid = false;\n    invalidReason = \"Missing\
           \ recent fair price range.\";\n  }\n\n  if (match < 0.65) {\n    isValid\
-          \ = false;\n    invalidReason = \"Low product match confidence. Human review\
-          \ required.\";\n  }\n\n  return {\n    isValid,\n    invalidReason,\n  \
-          \  normalizedProductCode: code || \"UNKNOWN\",\n    normalizedUnitCode:\
+          \ = false;\n    invalidReason = \"Low or missing product match confidence.\
+          \ Human review required.\";\n  }\n\n  return {\n    isValid,\n    invalidReason,\n\
+          \    normalizedProductCode: code || \"UNKNOWN\",\n    normalizedUnitCode:\
           \ unit || \"UNKNOWN\",\n    submittedPriceNumber: price,\n    fairLowNumber:\
           \ fairLow,\n    fairMidNumber: fairMid,\n    fairHighNumber: fairHigh,\n\
           \    matchConfidenceNumber: match\n  };\n}"
@@ -478,17 +478,14 @@ workflow:
         outputs:
           anomalyReasonsJson:
             children: null
-            type: boolean
+            type: string
           needsHumanReview:
             children: null
-            type: string
+            type: boolean
           normalizedProductCode:
             children: null
             type: string
           operatorChecklistJson:
-            children: null
-            type: string
-          result:
             children: null
             type: string
           reviewNote:
@@ -752,52 +749,56 @@ workflow:
             \ price report.\n\nYou do not approve reports.\nYou do not reject reports\
             \ as a final decision.\nYou do not calculate fair prices.\nYou do not\
             \ change riskLevel or statusSuggestion from the rule evaluation.\nSpring/backend\
-            \ and operations team are the source of truth.\n\nNever return APPROVED.\n\
-            Allowed statusSuggestion values:\nPENDING, REVIEW_REQUIRED, FLAGGED, REJECT_CANDIDATE\n\
-            \nNever blame sellers.\nNever use words like scam, fraud, rip-off, cheating,\
-            \ bad seller, 바가지, 사기, 속았다, 사지 마세요, 상인이 잘못했습니다.\n\nUse neutral wording:\n\
-            - Higher than usual\n- Below the recent reference range\n- Compare with\
-            \ nearby sellers\n- Check unit or product variant\n- Reports stay under\
-            \ review before going live\n- Use as reference when data is limited\n\n\
-            Return valid JSON only.\nDo not wrap JSON in markdown.\n\nOutput JSON\
-            \ schema:\n{\n  \"reviewNote\": \"This report is above the recent reference\
-            \ range. Check if it is a premium variant, bulk price, or input error.\"\
-            ,\n  \"userMessage\": \"Your report was received and will be reviewed\
-            \ before it is used.\",\n  \"operatorChecklist\": [\n    \"Check product\
-            \ variant.\",\n    \"Check submitted unit.\",\n    \"Compare with nearby\
-            \ observations.\"\n  ]\n}"
+            \ and operations team are the source of truth.\n\nWrite userMessage in\
+            \ the language indicated by Locale (en = English, ko = Korean, ru = Russian,\
+            \ uz = Uzbek).\nWrite reviewNote and operatorChecklist in English for\
+            \ the operations team.\n\nNever return APPROVED.\nAllowed statusSuggestion\
+            \ values:\nPENDING, REVIEW_REQUIRED, FLAGGED, REJECT_CANDIDATE\n\nNever\
+            \ blame sellers.\nNever use words like scam, fraud, rip-off, cheating,\
+            \ bad seller, 바가지, 사기, 속았다, 사지 마세요, 상인이 잘못했습니다, обман, мошенничество,\
+            \ не покупайте, плохой продавец.\n\nUse neutral wording:\n- Higher than\
+            \ usual\n- Below the recent reference range\n- Compare with nearby sellers\n\
+            - Check unit or product variant\n- Reports stay under review before going\
+            \ live\n- Use as reference when data is limited\n\nReturn valid JSON only.\n\
+            Do not wrap JSON in markdown.\n\nOutput JSON schema:\n{\n  \"reviewNote\"\
+            : \"This report is above the recent reference range. Check if it is a\
+            \ premium variant, bulk price, or input error.\",\n  \"userMessage\":\
+            \ \"Your report was received and will be reviewed before it is used.\"\
+            ,\n  \"operatorChecklist\": [\n    \"Check product variant.\",\n    \"\
+            Check submitted unit.\",\n    \"Compare with nearby observations.\"\n\
+            \  ]\n}"
         - id: 5403a6b5-8d28-4832-9f4b-dfb3e3c16476
           role: user
           text: 'Report input:
 
-            reportId: {{{#1781519533429.reportId#}}
+            reportId: {{#1781519533429.reportId#}}
 
-            rawProductName: {{{#1781519533429.rawProductName#}}
+            rawProductName: {{#1781519533429.rawProductName#}}
 
-            productCode: {{{#1781519533429.productCode#}}
+            productCode: {{#1781519533429.productCode#}}
 
-            marketCode: {{{#1781519533429.marketCode#}}
+            marketCode: {{#1781519533429.marketCode#}}
 
-            submittedPrice: {{{#1781519533429.submittedPrice#}}
+            submittedPrice: {{#1781519533429.submittedPrice#}}
 
-            submittedUnit: {{{#1781519533429.submittedUnit#}}
+            submittedUnit: {{#1781519533429.submittedUnit#}}
 
-            surveyDate: {{{#1781519533429.surveyDate#}}
+            surveyDate: {{#1781519533429.surveyDate#}}
 
 
             Rule evaluation:
 
-            {{{#1781520293771.reportInspectionContext#}}
+            {{#1781520293771.reportInspectionContext#}}
 
 
             Retrieved safety/copy knowledge:
 
-            {{{#context#}}
+            {{#context#}}
 
 
             Locale:
 
-            {{{#1781519533429.locale#}}
+            {{#1781519533429.locale#}}
 
 
             Return only JSON.
@@ -836,8 +837,11 @@ workflow:
           \ usual\"],\n    [/cheating/gi, \"pricing difference\"],\n    [/bad seller/gi,\
           \ \"pricing difference\"],\n    [/바가지/g, \"높은 편\"],\n    [/사기/g, \"가격 차이\"\
           ],\n    [/속았다/g, \"다시 확인\"],\n    [/사지 마세요/g, \"품질과 가격을 한 번 더 확인해 보세요\"\
-          ],\n    [/상인이 잘못했습니다/g, \"품목, 품질, 시장 상황에 따라 가격 차이가 있을 수 있습니다\"]\n  ];\n\n\
-          \  let output = String(text);\n  for (const [pattern, replacement] of replacements)\
+          ],\n    [/상인이 잘못했습니다/g, \"품목, 품질, 시장 상황에 따라 가격 차이가 있을 수 있습니다\"],\n    [/обман\\\
+          p{L}*/giu, \"ценовое различие\"],\n    [/мошеннич\\p{L}*/giu, \"ценовое\
+          \ различие\"],\n    [/не покупайте/gi, \"сравните цены у соседних продавцов\"\
+          ],\n    [/плохой продавец/gi, \"разница в ценах\"]\n  ];\n\n  let output\
+          \ = String(text);\n  for (const [pattern, replacement] of replacements)\
           \ {\n    output = output.replace(pattern, replacement);\n  }\n  return output;\n\
           }\n\nfunction normalizeStatus(status) {\n  const allowed = [\"PENDING\"\
           , \"REVIEW_REQUIRED\", \"FLAGGED\", \"REJECT_CANDIDATE\"];\n  const normalized\
@@ -1023,12 +1027,12 @@ workflow:
         - value_selector:
           - '1781520141192'
           - needsHumanReview
-          value_type: string
+          value_type: boolean
           variable: needsHumanReview
         - value_selector:
           - '1781520141192'
           - anomalyReasonsJson
-          value_type: boolean
+          value_type: string
           variable: anomalyReasonsJson
         - value_selector:
           - '1781520141192'
@@ -1046,7 +1050,7 @@ workflow:
           value_type: string
           variable: operatorChecklistJson
         selected: false
-        title: 'Code: Validate Output'
+        title: Output (Invalid)
         type: end
       height: 271
       id: '1781522292852'

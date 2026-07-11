@@ -443,7 +443,7 @@ workflow:
         - value_selector:
           - '1781522975143'
           - fairMid
-          value_type: string
+          value_type: number
           variable: fairMid
         - value_selector:
           - '1781522975143'
@@ -554,37 +554,42 @@ workflow:
             \ way.\n\nYou do not calculate prices.\nYou do not generate fairLow, fairMid,\
             \ or fairHigh.\nYou do not change backendVerdict.\nYou do not approve\
             \ reports.\nYou do not blame sellers.\nSpring/backend is the source of\
-            \ truth for price ranges and verdicts.\n\nUse only the price values provided\
-            \ in the input context.\nIf data confidence is low or sampleCount is low,\
-            \ clearly say the result is for reference only.\nIf market comparison\
-            \ data is provided, mention it cautiously as a comparison, not a guaranteed\
-            \ better price.\nIf optional phrase is not requested, optionalBargainPhrase\
-            \ must be an empty string.\n\nNever use:\nscam, fraud, rip-off, cheating,\
-            \ bad seller, do not buy,\n바가지, 사기, 속았다, 사지 마세요, 상인이 잘못했습니다.\n\nUse neutral\
-            \ wording:\n- Higher than usual\n- Within the fair range\n- Below the\
-            \ recent reference range\n- Compare with nearby sellers\n- Check product\
-            \ variant or unit\n- Based on field survey data\n- Use as reference when\
-            \ data is limited\n\nReturn valid JSON only.\nDo not wrap JSON in markdown.\n\
-            Do not include explanations outside JSON.\n\nOutput JSON schema:\n{\n\
-            \  \"backendVerdictEcho\": \"VERY_EXPENSIVE\",\n  \"insightText\": \"\
-            This quoted price is higher than the recent reference range for Tomato\
-            \ at Chorsu Bazaar.\",\n  \"confidenceExplanation\": \"The current field\
-            \ survey data is limited, so use this result as reference.\",\n  \"sourceSummary\"\
-            : \"Based on 2026-06-05 field survey data from Chorsu Bazaar.\",\n  \"\
-            marketComparisonInsight\": \"Korzinka reference prices may differ by variety\
-            \ such as red or pink greenhouse tomato.\",\n  \"recommendedAction\":\
-            \ \"Compare with nearby sellers and check whether this is a premium greenhouse\
-            \ tomato.\",\n  \"optionalBargainPhrase\": \"\"\n}"
+            \ truth for price ranges and verdicts.\n\nWrite every user-facing text\
+            \ field (insightText, confidenceExplanation, sourceSummary, marketComparisonInsight,\
+            \ recommendedAction, optionalBargainPhrase) in the language indicated\
+            \ by Locale in the input context (en = English, ko = Korean, ru = Russian,\
+            \ uz = Uzbek).\n\nUse only the price values provided in the input context.\n\
+            If data confidence is low or sampleCount is low, clearly say the result\
+            \ is for reference only.\nIf market comparison data is provided, mention\
+            \ it cautiously as a comparison, not a guaranteed better price.\nIf optional\
+            \ phrase is not requested, optionalBargainPhrase must be an empty string.\n\
+            \nNever use:\nscam, fraud, rip-off, cheating, bad seller, do not buy,\n\
+            바가지, 사기, 속았다, 사지 마세요, 상인이 잘못했습니다,\nобман, мошенничество, не покупайте,\
+            \ плохой продавец.\n\nUse neutral wording:\n- Higher than usual\n- Within\
+            \ the fair range\n- Below the recent reference range\n- Compare with nearby\
+            \ sellers\n- Check product variant or unit\n- Based on field survey data\n\
+            - Use as reference when data is limited\n\nReturn valid JSON only.\nDo\
+            \ not wrap JSON in markdown.\nDo not include explanations outside JSON.\n\
+            \nOutput JSON schema:\n{\n  \"backendVerdictEcho\": \"VERY_EXPENSIVE\"\
+            ,\n  \"insightText\": \"This quoted price is higher than the recent reference\
+            \ range for Tomato at Chorsu Bazaar.\",\n  \"confidenceExplanation\":\
+            \ \"The current field survey data is limited, so use this result as reference.\"\
+            ,\n  \"sourceSummary\": \"Based on 2026-06-05 field survey data from Chorsu\
+            \ Bazaar.\",\n  \"marketComparisonInsight\": \"Korzinka reference prices\
+            \ may differ by variety such as red or pink greenhouse tomato.\",\n  \"\
+            recommendedAction\": \"Compare with nearby sellers and check whether this\
+            \ is a premium greenhouse tomato.\",\n  \"optionalBargainPhrase\": \"\"\
+            \n}"
         - id: 52d6ddaf-83a0-416a-b519-0c86a04a3237
           role: user
           text: 'Backend price context:
 
-            {{{#1781523253597.priceContextText#}}
+            {{#1781523253597.priceContextText#}}
 
 
             Retrieved knowledge:
 
-            {{{#context#}}
+            {{#context#}}
 
 
             Instructions:
@@ -627,39 +632,42 @@ workflow:
           \ value = String(text || \"\");\n  const patterns = [\n    /scam/i,\n  \
           \  /fraud/i,\n    /rip-off/i,\n    /cheating/i,\n    /bad seller/i,\n  \
           \  /do not buy/i,\n    /바가지/g,\n    /사기/g,\n    /속았다/g,\n    /사지 마세요/g,\n\
-          \    /상인이 잘못/g\n  ];\n  return patterns.some((p) => p.test(value));\n}\n\
-          \nfunction removeForbiddenWords(text) {\n  if (!text) return \"\";\n\n \
-          \ const replacements = [\n    [/scam/gi, \"unusual pricing\"],\n    [/fraud/gi,\
+          \    /상인이 잘못/g,\n    /обман/i,\n    /мошеннич/i,\n    /не покупайте/i,\n\
+          \    /плохой продавец/i\n  ];\n  return patterns.some((p) => p.test(value));\n\
+          }\n\nfunction removeForbiddenWords(text) {\n  if (!text) return \"\";\n\n\
+          \  const replacements = [\n    [/scam/gi, \"unusual pricing\"],\n    [/fraud/gi,\
           \ \"pricing difference\"],\n    [/rip-off/gi, \"higher than usual\"],\n\
           \    [/cheating/gi, \"pricing difference\"],\n    [/bad seller/gi, \"pricing\
           \ difference\"],\n    [/do not buy/gi, \"compare with nearby sellers\"],\n\
           \    [/바가지/g, \"높은 편\"],\n    [/사기/g, \"가격 차이\"],\n    [/속았다/g, \"다시 확인\"\
           ],\n    [/사지 마세요/g, \"다른 가게와 비교해 보세요\"],\n    [/상인이 잘못했습니다/g, \"품목, 품질,\
           \ 시장 상황에 따라 가격 차이가 있을 수 있습니다\"],\n    [/상인이 잘못/g, \"시장 상황에 따라 가격 차이가 있을\
-          \ 수 있음\"]\n  ];\n\n  let output = String(text);\n  for (const [pattern,\
-          \ replacement] of replacements) {\n    output = output.replace(pattern,\
-          \ replacement);\n  }\n  return output;\n}\n\nfunction main({\n  llmText,\n\
-          \  isValidContext,\n  invalidReason,\n  backendVerdict,\n  priceContextText,\n\
-          \  lowDataWarning,\n  lowDataWarningText,\n  includeOptionalPhraseText,\n\
-          \  locale,\n  productName,\n  marketName,\n  surveyDate\n}) {\n  const parsed\
-          \ = safeParseJson(llmText) || {};\n  const expectedVerdict = String(backendVerdict\
-          \ || \"UNKNOWN\").trim().toUpperCase();\n\n  const isValid =\n    isValidContext\
-          \ === true ||\n    String(isValidContext || \"\").toLowerCase() === \"true\"\
-          ;\n\n  const isLowData =\n    lowDataWarning === true ||\n    String(lowDataWarningText\
-          \ || \"\").toLowerCase() === \"true\";\n\n  const includeOptional =\n  \
-          \  String(includeOptionalPhraseText || \"false\").toLowerCase() === \"true\"\
-          ;\n\n  const changedBackendVerdict =\n    parsed.backendVerdictEcho &&\n\
-          \    String(parsed.backendVerdictEcho).trim().toUpperCase() !== expectedVerdict;\n\
-          \n  const textBlob = [\n    parsed.insightText,\n    parsed.confidenceExplanation,\n\
-          \    parsed.sourceSummary,\n    parsed.marketComparisonInsight,\n    parsed.recommendedAction,\n\
-          \    parsed.optionalBargainPhrase\n  ].join(\" \");\n\n  const hadSellerBlame\
-          \ = hasForbiddenWords(textBlob);\n\n  const fallbackSource = surveyDate\n\
-          \    ? `Based on ${surveyDate} field survey/reference data.`\n    : \"Based\
-          \ on backend price data.\";\n\n  let insightText = parsed.insightText ||\
-          \ \"This price was checked against the current backend fair range.\";\n\
-          \  let confidenceExplanation =\n    parsed.confidenceExplanation || \"Use\
-          \ this result as reference and compare with nearby sellers.\";\n  let sourceSummary\
-          \ = parsed.sourceSummary || fallbackSource;\n  let marketComparisonInsight\
+          \ 수 있음\"],\n    [/обман\\p{L}*/giu, \"ценовое различие\"],\n    [/мошеннич\\\
+          p{L}*/giu, \"ценовое различие\"],\n    [/не покупайте/gi, \"сравните цены\
+          \ у соседних продавцов\"],\n    [/плохой продавец/gi, \"разница в ценах\"\
+          ]\n  ];\n\n  let output = String(text);\n  for (const [pattern, replacement]\
+          \ of replacements) {\n    output = output.replace(pattern, replacement);\n\
+          \  }\n  return output;\n}\n\nfunction main({\n  llmText,\n  isValidContext,\n\
+          \  invalidReason,\n  backendVerdict,\n  priceContextText,\n  lowDataWarning,\n\
+          \  lowDataWarningText,\n  includeOptionalPhraseText,\n  surveyDate\n}) {\n\
+          \  const parsed = safeParseJson(llmText) || {};\n  const expectedVerdict\
+          \ = String(backendVerdict || \"UNKNOWN\").trim().toUpperCase();\n\n  const\
+          \ isValid =\n    isValidContext === true ||\n    String(isValidContext ||\
+          \ \"\").toLowerCase() === \"true\";\n\n  const isLowData =\n    lowDataWarning\
+          \ === true ||\n    String(lowDataWarningText || \"\").toLowerCase() ===\
+          \ \"true\";\n\n  const includeOptional =\n    String(includeOptionalPhraseText\
+          \ || \"false\").toLowerCase() === \"true\";\n\n  const changedBackendVerdict\
+          \ =\n    parsed.backendVerdictEcho &&\n    String(parsed.backendVerdictEcho).trim().toUpperCase()\
+          \ !== expectedVerdict;\n\n  const textBlob = [\n    parsed.insightText,\n\
+          \    parsed.confidenceExplanation,\n    parsed.sourceSummary,\n    parsed.marketComparisonInsight,\n\
+          \    parsed.recommendedAction,\n    parsed.optionalBargainPhrase\n  ].join(\"\
+          \ \");\n\n  const hadSellerBlame = hasForbiddenWords(textBlob);\n\n  const\
+          \ fallbackSource = surveyDate\n    ? `Based on ${surveyDate} field survey/reference\
+          \ data.`\n    : \"Based on backend price data.\";\n\n  let insightText =\
+          \ parsed.insightText || \"This price was checked against the current backend\
+          \ fair range.\";\n  let confidenceExplanation =\n    parsed.confidenceExplanation\
+          \ || \"Use this result as reference and compare with nearby sellers.\";\n\
+          \  let sourceSummary = parsed.sourceSummary || fallbackSource;\n  let marketComparisonInsight\
           \ =\n    parsed.marketComparisonInsight || \"Market comparison may vary\
           \ by product variety, unit, and data availability.\";\n  let recommendedAction\
           \ =\n    parsed.recommendedAction || \"Compare with nearby sellers and check\
@@ -680,12 +688,12 @@ workflow:
           \ = removeForbiddenWords(recommendedAction);\n  optionalBargainPhrase =\
           \ removeForbiddenWords(optionalBargainPhrase);\n\n  const safetyFlags =\
           \ {\n    usedOnlyBackendPrices: true,\n    changedBackendVerdict: Boolean(changedBackendVerdict),\n\
-          \    containsSellerBlame: false\n  };\n\n  return {\n    insightText,\n\
+          \    containsSellerBlame: hadSellerBlame\n  };\n\n  return {\n    insightText,\n\
           \    confidenceExplanation,\n    sourceSummary,\n    marketComparisonInsight,\n\
           \    recommendedAction,\n    optionalBargainPhrase,\n    safetyFlagsJson:\
           \ JSON.stringify(safetyFlags),\n    usedOnlyBackendPrices: true,\n    changedBackendVerdict:\
-          \ Boolean(changedBackendVerdict),\n    containsSellerBlame: false,\n   \
-          \ aiStatus: isValid ? \"OK\" : \"INVALID_CONTEXT\"\n  };\n}"
+          \ Boolean(changedBackendVerdict),\n    containsSellerBlame: hadSellerBlame,\n\
+          \    aiStatus: isValid ? \"OK\" : \"INVALID_CONTEXT\"\n  };\n}"
         code_language: javascript
         outputs:
           aiStatus:
@@ -765,21 +773,6 @@ workflow:
           - includeOptionalPhraseText
           value_type: string
           variable: includeOptionalPhraseText
-        - value_selector:
-          - '1781522975143'
-          - locale
-          value_type: string
-          variable: locale
-        - value_selector:
-          - '1781522975143'
-          - productName
-          value_type: string
-          variable: productName
-        - value_selector:
-          - '1781522975143'
-          - marketName
-          value_type: string
-          variable: marketName
         - value_selector:
           - '1781522975143'
           - surveyDate
