@@ -1,7 +1,6 @@
 app:
-  description: Inspect user-submitted price reports for anomaly risk, unit mismatch,
-    and review necessity. This workflow never approves reports automatically and does
-    not calculate fair prices.
+  description: Inspect user-submitted price reports for anomaly risk, unit mismatch, and review necessity. This workflow never
+    approves reports automatically and does not calculate fair prices.
   icon: 🤖
   icon_background: '#FFEAD5'
   icon_type: emoji
@@ -161,11 +160,11 @@ workflow:
         isInIteration: false
         isInLoop: false
         sourceType: code
-        targetType: end
-      id: 1781521660894-source-1781521890198-target
+        targetType: variable-aggregator
+      id: 1781521660894-source-1781523100001-target
       source: '1781521660894'
       sourceHandle: source
-      target: '1781521890198'
+      target: '1781523100001'
       targetHandle: target
       type: custom
       zIndex: 0
@@ -173,11 +172,23 @@ workflow:
         isInIteration: false
         isInLoop: false
         sourceType: code
-        targetType: end
-      id: 1781520141192-source-1781522292852-target
+        targetType: variable-aggregator
+      id: 1781520141192-source-1781523100001-target
       source: '1781520141192'
       sourceHandle: source
-      target: '1781522292852'
+      target: '1781523100001'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: variable-aggregator
+        targetType: end
+      id: 1781523100001-source-1781521890198-target
+      source: '1781523100001'
+      sourceHandle: source
+      target: '1781521890198'
       targetHandle: target
       type: custom
       zIndex: 0
@@ -321,31 +332,22 @@ workflow:
       type: custom
       width: 242
     - data:
-        code: "function toNumber(value, fallback = 0) {\n  const n = Number(value);\n\
-          \  return Number.isFinite(n) ? n : fallback;\n}\n\nfunction main({\n  productCode,\n\
-          \  marketCode,\n  submittedPrice,\n  submittedUnit,\n  recentFairLow,\n\
-          \  recentFairMid,\n  recentFairHigh,\n  matchConfidence\n}) {\n  const code\
-          \ = String(productCode || \"\").trim().toUpperCase();\n  const market =\
-          \ String(marketCode || \"\").trim().toUpperCase();\n  const unit = String(submittedUnit\
-          \ || \"\").trim().toUpperCase();\n\n  const price = toNumber(submittedPrice,\
-          \ -1);\n  const fairLow = toNumber(recentFairLow, 0);\n  const fairMid =\
-          \ toNumber(recentFairMid, 0);\n  const fairHigh = toNumber(recentFairHigh,\
-          \ 0);\n  const match = toNumber(matchConfidence, 0);\n\n  let isValid =\
-          \ true;\n  let invalidReason = \"\";\n\n  if (!code || code === \"UNKNOWN\"\
-          ) {\n    isValid = false;\n    invalidReason = \"Unknown or missing product\
-          \ code.\";\n  } else if (!market) {\n    isValid = false;\n    invalidReason\
-          \ = \"Missing market code.\";\n  } else if (!unit) {\n    isValid = false;\n\
-          \    invalidReason = \"Missing submitted unit.\";\n  } else if (price <=\
-          \ 0) {\n    isValid = false;\n    invalidReason = \"Submitted price must\
-          \ be greater than zero.\";\n  } else if (fairLow <= 0 || fairMid <= 0 ||\
-          \ fairHigh <= 0) {\n    isValid = false;\n    invalidReason = \"Missing\
-          \ recent fair price range.\";\n  }\n\n  if (match < 0.65) {\n    isValid\
-          \ = false;\n    invalidReason = \"Low or missing product match confidence.\
-          \ Human review required.\";\n  }\n\n  return {\n    isValid,\n    invalidReason,\n\
-          \    normalizedProductCode: code || \"UNKNOWN\",\n    normalizedUnitCode:\
-          \ unit || \"UNKNOWN\",\n    submittedPriceNumber: price,\n    fairLowNumber:\
-          \ fairLow,\n    fairMidNumber: fairMid,\n    fairHighNumber: fairHigh,\n\
-          \    matchConfidenceNumber: match\n  };\n}"
+        code: "function toNumber(value, fallback = 0) {\n  const n = Number(value);\n  return Number.isFinite(n) ? n : fallback;\n\
+          }\n\nfunction main({\n  productCode,\n  marketCode,\n  submittedPrice,\n  submittedUnit,\n  recentFairLow,\n  recentFairMid,\n\
+          \  recentFairHigh,\n  matchConfidence\n}) {\n  const code = String(productCode || \"\").trim().toUpperCase();\n\
+          \  const market = String(marketCode || \"\").trim().toUpperCase();\n  const unit = String(submittedUnit || \"\"\
+          ).trim().toUpperCase();\n\n  const price = toNumber(submittedPrice, -1);\n  const fairLow = toNumber(recentFairLow,\
+          \ 0);\n  const fairMid = toNumber(recentFairMid, 0);\n  const fairHigh = toNumber(recentFairHigh, 0);\n  const match\
+          \ = toNumber(matchConfidence, 0);\n\n  let isValid = true;\n  let invalidReason = \"\";\n\n  if (!code || code ===\
+          \ \"UNKNOWN\") {\n    isValid = false;\n    invalidReason = \"Unknown or missing product code.\";\n  } else if (!market)\
+          \ {\n    isValid = false;\n    invalidReason = \"Missing market code.\";\n  } else if (!unit) {\n    isValid = false;\n\
+          \    invalidReason = \"Missing submitted unit.\";\n  } else if (price <= 0) {\n    isValid = false;\n    invalidReason\
+          \ = \"Submitted price must be greater than zero.\";\n  } else if (fairLow <= 0 || fairMid <= 0 || fairHigh <= 0)\
+          \ {\n    isValid = false;\n    invalidReason = \"Missing recent fair price range.\";\n  }\n\n  if (match < 0.65)\
+          \ {\n    isValid = false;\n    invalidReason = \"Low or missing product match confidence. Human review required.\"\
+          ;\n  }\n\n  return {\n    isValid,\n    invalidReason,\n    normalizedProductCode: code || \"UNKNOWN\",\n    normalizedUnitCode:\
+          \ unit || \"UNKNOWN\",\n    submittedPriceNumber: price,\n    fairLowNumber: fairLow,\n    fairMidNumber: fairMid,\n\
+          \    fairHighNumber: fairHigh,\n    matchConfidenceNumber: match\n  };\n}"
         code_language: javascript
         outputs:
           fairHighNumber:
@@ -462,18 +464,14 @@ workflow:
       type: custom
       width: 242
     - data:
-        code: "function main({ invalidReason, normalizedProductCode, submittedPriceNumber,\
-          \ locale }) {\n  const reason = invalidReason || \"Invalid report input.\"\
-          ;\n  const isKorean = String(locale || \"\").toLowerCase().startsWith(\"\
-          ko\");\n\n  const userMessage = isKorean\n    ? \"제보가 접수되었습니다. 검토 후 시세에\
-          \ 반영됩니다.\"\n    : \"Your report was received and will be reviewed before\
-          \ being used.\";\n\nreturn {\n  normalizedProductCode: normalizedProductCode\
-          \ || \"UNKNOWN\",\n  riskLevel: \"HIGH\",\n  statusSuggestion: \"REJECT_CANDIDATE\"\
-          ,\n  needsHumanReview: true,\n  anomalyReasonsJson: JSON.stringify([reason]),\n\
-          \  reviewNote: `Reject candidate: ${reason} Submitted price: ${submittedPriceNumber}`,\n\
-          \  userMessage,\n  operatorChecklistJson: JSON.stringify([\n    \"Check\
-          \ required input fields.\",\n    \"Check product normalization result.\"\
-          ,\n    \"Do not use this report without manual review.\"\n  ])\n};\n}"
+        code: "function main({ invalidReason, normalizedProductCode, submittedPriceNumber, locale }) {\n  const reason = invalidReason\
+          \ || \"Invalid report input.\";\n  const isKorean = String(locale || \"\").toLowerCase().startsWith(\"ko\");\n\n\
+          \  const userMessage = isKorean\n    ? \"제보가 접수되었습니다. 검토 후 시세에 반영됩니다.\"\n    : \"Your report was received and will\
+          \ be reviewed before being used.\";\n\nreturn {\n  normalizedProductCode: normalizedProductCode || \"UNKNOWN\",\n\
+          \  riskLevel: \"HIGH\",\n  statusSuggestion: \"REJECT_CANDIDATE\",\n  needsHumanReview: \"true\",\n  anomalyReasonsJson:\
+          \ JSON.stringify([reason]),\n  reviewNote: `Reject candidate: ${reason} Submitted price: ${submittedPriceNumber}`,\n\
+          \  userMessage,\n  operatorChecklistJson: JSON.stringify([\n    \"Check required input fields.\",\n    \"Check product\
+          \ normalization result.\",\n    \"Do not use this report without manual review.\"\n  ])\n};\n}"
         code_language: javascript
         outputs:
           anomalyReasonsJson:
@@ -481,7 +479,7 @@ workflow:
             type: string
           needsHumanReview:
             children: null
-            type: boolean
+            type: string
           normalizedProductCode:
             children: null
             type: string
@@ -538,59 +536,41 @@ workflow:
       type: custom
       width: 242
     - data:
-        code: "function toNumber(value, fallback = 0) {\n  const n = Number(value);\n\
-          \  return Number.isFinite(n) ? n : fallback;\n}\n\nfunction main({\n  normalizedProductCode,\n\
-          \  normalizedUnitCode,\n  submittedPriceNumber,\n  fairLowNumber,\n  fairMidNumber,\n\
-          \  fairHighNumber,\n  confidenceScore,\n  sampleCount,\n  surveyDate,\n\
-          \  sourceBreakdownJson\n}) {\n  const price = toNumber(submittedPriceNumber,\
-          \ 0);\n  const low = toNumber(fairLowNumber, 0);\n  const mid = toNumber(fairMidNumber,\
-          \ 0);\n  const high = toNumber(fairHighNumber, 0);\n  const confidence =\
-          \ toNumber(confidenceScore, 0);\n  const samples = toNumber(sampleCount,\
-          \ 0);\n\n  let riskLevel = \"LOW\";\n  let statusSuggestion = \"PENDING\"\
-          ;\n  let needsHumanReview = false;\n  const reasons = [];\n\n  const ratioHigh\
-          \ = high > 0 ? price / high : 0;\n  const ratioLow = low > 0 ? price / low\
-          \ : 0;\n  const lowData = confidence < 0.5 || samples < 3;\n\n  if (price\
-          \ > high * 2) {\n    riskLevel = \"HIGH\";\n    statusSuggestion = \"FLAGGED\"\
-          ;\n    needsHumanReview = true;\n    reasons.push(\"Submitted price is far\
-          \ above the recent fair range.\");\n    reasons.push(\"It may be a bulk\
-          \ price, premium variant, or input error.\");\n  } else if (price < low\
-          \ * 0.5) {\n    riskLevel = \"HIGH\";\n    statusSuggestion = \"FLAGGED\"\
-          ;\n    needsHumanReview = true;\n    reasons.push(\"Submitted price is far\
-          \ below the recent fair range.\");\n    reasons.push(\"It may be a unit\
-          \ mismatch, discount, or input error.\");\n  } else if (price > high) {\n\
-          \    riskLevel = \"MEDIUM\";\n    statusSuggestion = \"REVIEW_REQUIRED\"\
-          ;\n    needsHumanReview = true;\n    reasons.push(\"Submitted price is above\
-          \ the recent fair range.\");\n  } else if (price < low) {\n    riskLevel\
-          \ = \"MEDIUM\";\n    statusSuggestion = \"REVIEW_REQUIRED\";\n    needsHumanReview\
-          \ = true;\n    reasons.push(\"Submitted price is below the recent fair range.\"\
-          );\n  } else {\n    riskLevel = \"LOW\";\n    statusSuggestion = \"PENDING\"\
-          ;\n    needsHumanReview = false;\n    reasons.push(\"Submitted price is\
-          \ within the recent fair range.\");\n  }\n\n  if (lowData) {\n    reasons.push(\"\
-          Recent data is limited, so this report should be used as reference data.\"\
-          );\n  }\n\n  const needsHumanReviewText = needsHumanReview ? \"true\" :\
-          \ \"false\";\n  const lowDataWarningText = lowData ? \"true\" : \"false\"\
-          ;\n  const anomalyReasonsText = reasons.join(\"; \");\n\n  const ruleSummary\
-          \ = [\n    `productCode=${normalizedProductCode}`,\n    `unit=${normalizedUnitCode}`,\n\
-          \    `submittedPrice=${price}`,\n    `fairRange=${low}-${high}`,\n    `fairMid=${mid}`,\n\
-          \    `confidenceScore=${confidence}`,\n    `sampleCount=${samples}`,\n \
-          \   `surveyDate=${surveyDate || \"\"}`,\n    `sourceBreakdown=${sourceBreakdownJson\
-          \ || \"\"}`,\n    `riskLevel=${riskLevel}`,\n    `statusSuggestion=${statusSuggestion}`,\n\
-          \    `needsHumanReview=${needsHumanReviewText}`,\n    `lowDataWarning=${lowDataWarningText}`\n\
-          \  ].join(\"\\n\");\n\n  const reportInspectionContext = [\n    `Product\
-          \ code: ${normalizedProductCode}`,\n    `Submitted unit: ${normalizedUnitCode}`,\n\
-          \    `Submitted price: ${price}`,\n    `Recent fair range: ${low} - ${high}`,\n\
-          \    `Recent fair midpoint: ${mid}`,\n    `Risk level: ${riskLevel}`,\n\
-          \    `Status suggestion: ${statusSuggestion}`,\n    `Needs human review:\
-          \ ${needsHumanReviewText}`,\n    `Low data warning: ${lowDataWarningText}`,\n\
-          \    `Anomaly reasons: ${anomalyReasonsText}`,\n    `Confidence score: ${confidence}`,\n\
-          \    `Sample count: ${samples}`,\n    `Survey date: ${surveyDate || \"not\
-          \ provided\"}`,\n    `Source breakdown: ${sourceBreakdownJson || \"not provided\"\
-          }`\n  ].join(\"\\n\");\n\n  return {\n    normalizedProductCode: normalizedProductCode\
-          \ || \"UNKNOWN\",\n    riskLevel,\n    statusSuggestion,\n    needsHumanReview,\n\
-          \    needsHumanReviewText,\n    anomalyReasonsJson: JSON.stringify(reasons),\n\
-          \    anomalyReasonsText,\n    ruleSummary,\n    lowDataWarning: lowData,\n\
-          \    lowDataWarningText,\n    priceRatioToFairHigh: ratioHigh,\n    priceRatioToFairLow:\
-          \ ratioLow,\n    reportInspectionContext\n  };\n}"
+        code: "function toNumber(value, fallback = 0) {\n  const n = Number(value);\n  return Number.isFinite(n) ? n : fallback;\n\
+          }\n\nfunction main({\n  normalizedProductCode,\n  normalizedUnitCode,\n  submittedPriceNumber,\n  fairLowNumber,\n\
+          \  fairMidNumber,\n  fairHighNumber,\n  confidenceScore,\n  sampleCount,\n  surveyDate,\n  sourceBreakdownJson\n\
+          }) {\n  const price = toNumber(submittedPriceNumber, 0);\n  const low = toNumber(fairLowNumber, 0);\n  const mid\
+          \ = toNumber(fairMidNumber, 0);\n  const high = toNumber(fairHighNumber, 0);\n  const confidence = toNumber(confidenceScore,\
+          \ 0);\n  const samples = toNumber(sampleCount, 0);\n\n  let riskLevel = \"LOW\";\n  let statusSuggestion = \"PENDING\"\
+          ;\n  let needsHumanReview = false;\n  const reasons = [];\n\n  const ratioHigh = high > 0 ? price / high : 0;\n\
+          \  const ratioLow = low > 0 ? price / low : 0;\n  const lowData = confidence < 0.5 || samples < 3;\n\n  if (price\
+          \ > high * 2) {\n    riskLevel = \"HIGH\";\n    statusSuggestion = \"FLAGGED\";\n    needsHumanReview = true;\n\
+          \    reasons.push(\"Submitted price is far above the recent fair range.\");\n    reasons.push(\"It may be a bulk\
+          \ price, premium variant, or input error.\");\n  } else if (price < low * 0.5) {\n    riskLevel = \"HIGH\";\n  \
+          \  statusSuggestion = \"FLAGGED\";\n    needsHumanReview = true;\n    reasons.push(\"Submitted price is far below\
+          \ the recent fair range.\");\n    reasons.push(\"It may be a unit mismatch, discount, or input error.\");\n  } else\
+          \ if (price > high) {\n    riskLevel = \"MEDIUM\";\n    statusSuggestion = \"REVIEW_REQUIRED\";\n    needsHumanReview\
+          \ = true;\n    reasons.push(\"Submitted price is above the recent fair range.\");\n  } else if (price < low) {\n\
+          \    riskLevel = \"MEDIUM\";\n    statusSuggestion = \"REVIEW_REQUIRED\";\n    needsHumanReview = true;\n    reasons.push(\"\
+          Submitted price is below the recent fair range.\");\n  } else {\n    riskLevel = \"LOW\";\n    statusSuggestion\
+          \ = \"PENDING\";\n    needsHumanReview = false;\n    reasons.push(\"Submitted price is within the recent fair range.\"\
+          );\n  }\n\n  if (lowData) {\n    reasons.push(\"Recent data is limited, so this report should be used as reference\
+          \ data.\");\n  }\n\n  const needsHumanReviewText = needsHumanReview ? \"true\" : \"false\";\n  const lowDataWarningText\
+          \ = lowData ? \"true\" : \"false\";\n  const anomalyReasonsText = reasons.join(\"; \");\n\n  const ruleSummary =\
+          \ [\n    `productCode=${normalizedProductCode}`,\n    `unit=${normalizedUnitCode}`,\n    `submittedPrice=${price}`,\n\
+          \    `fairRange=${low}-${high}`,\n    `fairMid=${mid}`,\n    `confidenceScore=${confidence}`,\n    `sampleCount=${samples}`,\n\
+          \    `surveyDate=${surveyDate || \"\"}`,\n    `sourceBreakdown=${sourceBreakdownJson || \"\"}`,\n    `riskLevel=${riskLevel}`,\n\
+          \    `statusSuggestion=${statusSuggestion}`,\n    `needsHumanReview=${needsHumanReviewText}`,\n    `lowDataWarning=${lowDataWarningText}`\n\
+          \  ].join(\"\\n\");\n\n  const reportInspectionContext = [\n    `Product code: ${normalizedProductCode}`,\n    `Submitted\
+          \ unit: ${normalizedUnitCode}`,\n    `Submitted price: ${price}`,\n    `Recent fair range: ${low} - ${high}`,\n\
+          \    `Recent fair midpoint: ${mid}`,\n    `Risk level: ${riskLevel}`,\n    `Status suggestion: ${statusSuggestion}`,\n\
+          \    `Needs human review: ${needsHumanReviewText}`,\n    `Low data warning: ${lowDataWarningText}`,\n    `Anomaly\
+          \ reasons: ${anomalyReasonsText}`,\n    `Confidence score: ${confidence}`,\n    `Sample count: ${samples}`,\n  \
+          \  `Survey date: ${surveyDate || \"not provided\"}`,\n    `Source breakdown: ${sourceBreakdownJson || \"not provided\"\
+          }`\n  ].join(\"\\n\");\n\n  return {\n    normalizedProductCode: normalizedProductCode || \"UNKNOWN\",\n    riskLevel,\n\
+          \    statusSuggestion,\n    needsHumanReview,\n    needsHumanReviewText,\n    anomalyReasonsJson: JSON.stringify(reasons),\n\
+          \    anomalyReasonsText,\n    ruleSummary,\n    lowDataWarning: lowData,\n    lowDataWarningText,\n    priceRatioToFairHigh:\
+          \ ratioHigh,\n    priceRatioToFairLow: ratioLow,\n    reportInspectionContext\n  };\n}"
         code_language: javascript
         outputs:
           anomalyReasonsJson:
@@ -744,29 +724,21 @@ workflow:
         prompt_template:
         - id: a137a7a5-e621-45d1-8d2f-b3ac394600c8
           role: system
-          text: "You are BozorCheck AI Report Inspector.\n\nYour job is to write a\
-            \ short neutral review note and user-facing message for a submitted bazaar\
-            \ price report.\n\nYou do not approve reports.\nYou do not reject reports\
-            \ as a final decision.\nYou do not calculate fair prices.\nYou do not\
-            \ change riskLevel or statusSuggestion from the rule evaluation.\nSpring/backend\
-            \ and operations team are the source of truth.\n\nWrite userMessage in\
-            \ the language indicated by Locale (en = English, ko = Korean, ru = Russian,\
-            \ uz = Uzbek).\nWrite reviewNote and operatorChecklist in English for\
-            \ the operations team.\n\nNever return APPROVED.\nAllowed statusSuggestion\
-            \ values:\nPENDING, REVIEW_REQUIRED, FLAGGED, REJECT_CANDIDATE\n\nNever\
-            \ blame sellers.\nNever use words like scam, fraud, rip-off, cheating,\
-            \ bad seller, 바가지, 사기, 속았다, 사지 마세요, 상인이 잘못했습니다, обман, мошенничество,\
-            \ не покупайте, плохой продавец.\n\nUse neutral wording:\n- Higher than\
-            \ usual\n- Below the recent reference range\n- Compare with nearby sellers\n\
-            - Check unit or product variant\n- Reports stay under review before going\
-            \ live\n- Use as reference when data is limited\n\nReturn valid JSON only.\n\
-            Do not wrap JSON in markdown.\n\nOutput JSON schema:\n{\n  \"reviewNote\"\
-            : \"This report is above the recent reference range. Check if it is a\
-            \ premium variant, bulk price, or input error.\",\n  \"userMessage\":\
-            \ \"Your report was received and will be reviewed before it is used.\"\
-            ,\n  \"operatorChecklist\": [\n    \"Check product variant.\",\n    \"\
-            Check submitted unit.\",\n    \"Compare with nearby observations.\"\n\
-            \  ]\n}"
+          text: "You are BozorCheck AI Report Inspector.\n\nYour job is to write a short neutral review note and user-facing\
+            \ message for a submitted bazaar price report.\n\nYou do not approve reports.\nYou do not reject reports as a\
+            \ final decision.\nYou do not calculate fair prices.\nYou do not change riskLevel or statusSuggestion from the\
+            \ rule evaluation.\nSpring/backend and operations team are the source of truth.\n\nWrite userMessage in the language\
+            \ indicated by Locale (en = English, ko = Korean, ru = Russian, uz = Uzbek).\nWrite reviewNote and operatorChecklist\
+            \ in English for the operations team.\n\nNever return APPROVED.\nAllowed statusSuggestion values:\nPENDING, REVIEW_REQUIRED,\
+            \ FLAGGED, REJECT_CANDIDATE\n\nNever blame sellers.\nNever use words like scam, fraud, rip-off, cheating, bad\
+            \ seller, 바가지, 사기, 속았다, 사지 마세요, 상인이 잘못했습니다, обман, мошенничество, не покупайте, плохой продавец.\n\nUse neutral\
+            \ wording:\n- Higher than usual\n- Below the recent reference range\n- Compare with nearby sellers\n- Check unit\
+            \ or product variant\n- Reports stay under review before going live\n- Use as reference when data is limited\n\
+            \nReturn valid JSON only.\nDo not wrap JSON in markdown.\n\nOutput JSON schema:\n{\n  \"reviewNote\": \"This report\
+            \ is above the recent reference range. Check if it is a premium variant, bulk price, or input error.\",\n  \"\
+            userMessage\": \"Your report was received and will be reviewed before it is used.\",\n  \"operatorChecklist\"\
+            : [\n    \"Check product variant.\",\n    \"Check submitted unit.\",\n    \"Compare with nearby observations.\"\
+            \n  ]\n}"
         - id: 5403a6b5-8d28-4832-9f4b-dfb3e3c16476
           role: user
           text: 'Report input:
@@ -827,50 +799,35 @@ workflow:
       type: custom
       width: 242
     - data:
-        code: "function safeParseJson(text) {\n  if (!text) return null;\n\n  let\
-          \ cleaned = String(text).trim();\n\n  cleaned = cleaned\n    .replace(/^```json\\\
-          s*/i, \"\")\n    .replace(/^```\\s*/i, \"\")\n    .replace(/```$/i, \"\"\
-          )\n    .trim();\n\n  try {\n    return JSON.parse(cleaned);\n  } catch (e)\
-          \ {\n    return null;\n  }\n}\n\nfunction removeForbiddenWords(text) {\n\
-          \  if (!text) return \"\";\n\n  const replacements = [\n    [/scam/gi, \"\
-          unusual\"],\n    [/fraud/gi, \"unusual\"],\n    [/rip-off/gi, \"higher than\
-          \ usual\"],\n    [/cheating/gi, \"pricing difference\"],\n    [/bad seller/gi,\
-          \ \"pricing difference\"],\n    [/바가지/g, \"높은 편\"],\n    [/사기/g, \"가격 차이\"\
-          ],\n    [/속았다/g, \"다시 확인\"],\n    [/사지 마세요/g, \"품질과 가격을 한 번 더 확인해 보세요\"\
-          ],\n    [/상인이 잘못했습니다/g, \"품목, 품질, 시장 상황에 따라 가격 차이가 있을 수 있습니다\"],\n    [/обман\\\
-          p{L}*/giu, \"ценовое различие\"],\n    [/мошеннич\\p{L}*/giu, \"ценовое\
-          \ различие\"],\n    [/не покупайте/gi, \"сравните цены у соседних продавцов\"\
-          ],\n    [/плохой продавец/gi, \"разница в ценах\"]\n  ];\n\n  let output\
-          \ = String(text);\n  for (const [pattern, replacement] of replacements)\
-          \ {\n    output = output.replace(pattern, replacement);\n  }\n  return output;\n\
-          }\n\nfunction normalizeStatus(status) {\n  const allowed = [\"PENDING\"\
-          , \"REVIEW_REQUIRED\", \"FLAGGED\", \"REJECT_CANDIDATE\"];\n  const normalized\
-          \ = String(status || \"\").trim().toUpperCase();\n\n  if (normalized ===\
-          \ \"APPROVED\") {\n    return \"REVIEW_REQUIRED\";\n  }\n\n  return allowed.includes(normalized)\
-          \ ? normalized : \"REVIEW_REQUIRED\";\n}\n\nfunction main({\n  llmText,\n\
-          \  normalizedProductCode,\n  riskLevel,\n  statusSuggestion,\n  needsHumanReview,\n\
-          \  anomalyReasonsJson,\n  locale\n}) {\n  const parsed = safeParseJson(llmText)\
-          \ || {};\n\n  const safeStatus = normalizeStatus(statusSuggestion);\n  const\
-          \ safeRisk = [\"LOW\", \"MEDIUM\", \"HIGH\"].includes(String(riskLevel ||\
-          \ \"\").toUpperCase())\n    ? String(riskLevel).toUpperCase()\n    : \"\
-          MEDIUM\";\n\n  let reasons = [];\n  try {\n    reasons = JSON.parse(anomalyReasonsJson\
-          \ || \"[]\");\n  } catch (e) {\n    reasons = [];\n  }\n\n  const isKorean\
-          \ = String(locale || \"\").toLowerCase().startsWith(\"ko\");\n\n  const\
-          \ fallbackReviewNote = reasons.length > 0\n    ? reasons.join(\" \")\n \
-          \   : \"Review this report against recent reference data.\";\n\n  const\
-          \ fallbackUserMessage = isKorean\n    ? \"제보가 접수되었습니다. 검토 후 시세에 반영됩니다.\"\
-          \n    : \"Your report was received and will be reviewed before it is used.\"\
-          ;\n\n  const reviewNote = removeForbiddenWords(parsed.reviewNote || fallbackReviewNote);\n\
-          \  const userMessage = removeForbiddenWords(parsed.userMessage || fallbackUserMessage);\n\
-          \n  const checklist = Array.isArray(parsed.operatorChecklist)\n    ? parsed.operatorChecklist.map((item)\
-          \ => removeForbiddenWords(String(item))).slice(0, 5)\n    : [\n        \"\
-          Check product variant.\",\n        \"Check submitted unit.\",\n        \"\
-          Compare with nearby observations.\"\n      ];\n\n  return {\n    normalizedProductCode:\
-          \ normalizedProductCode || \"UNKNOWN\",\n    riskLevel: safeRisk,\n    statusSuggestion:\
-          \ safeStatus,\n    needsHumanReview: Boolean(needsHumanReview || safeStatus\
-          \ !== \"PENDING\"),\n    anomalyReasonsJson: JSON.stringify(reasons),\n\
-          \    reviewNote,\n    userMessage,\n    operatorChecklistJson: JSON.stringify(checklist)\n\
-          \  };\n}"
+        code: "function safeParseJson(text) {\n  if (!text) return null;\n\n  let cleaned = String(text).trim();\n\n  cleaned\
+          \ = cleaned\n    .replace(/^```json\\s*/i, \"\")\n    .replace(/^```\\s*/i, \"\")\n    .replace(/```$/i, \"\")\n\
+          \    .trim();\n\n  try {\n    return JSON.parse(cleaned);\n  } catch (e) {\n    return null;\n  }\n}\n\nfunction\
+          \ removeForbiddenWords(text) {\n  if (!text) return \"\";\n\n  const replacements = [\n    [/scam/gi, \"unusual\"\
+          ],\n    [/fraud/gi, \"unusual\"],\n    [/rip-off/gi, \"higher than usual\"],\n    [/cheating/gi, \"pricing difference\"\
+          ],\n    [/bad seller/gi, \"pricing difference\"],\n    [/바가지/g, \"높은 편\"],\n    [/사기/g, \"가격 차이\"],\n    [/속았다/g,\
+          \ \"다시 확인\"],\n    [/사지 마세요/g, \"품질과 가격을 한 번 더 확인해 보세요\"],\n    [/상인이 잘못했습니다/g, \"품목, 품질, 시장 상황에 따라 가격 차이가 있을 수\
+          \ 있습니다\"],\n    [/обман\\p{L}*/giu, \"ценовое различие\"],\n    [/мошеннич\\p{L}*/giu, \"ценовое различие\"],\n\
+          \    [/не покупайте/gi, \"сравните цены у соседних продавцов\"],\n    [/плохой продавец/gi, \"разница в ценах\"\
+          ]\n  ];\n\n  let output = String(text);\n  for (const [pattern, replacement] of replacements) {\n    output = output.replace(pattern,\
+          \ replacement);\n  }\n  return output;\n}\n\nfunction normalizeStatus(status) {\n  const allowed = [\"PENDING\"\
+          , \"REVIEW_REQUIRED\", \"FLAGGED\", \"REJECT_CANDIDATE\"];\n  const normalized = String(status || \"\").trim().toUpperCase();\n\
+          \n  if (normalized === \"APPROVED\") {\n    return \"REVIEW_REQUIRED\";\n  }\n\n  return allowed.includes(normalized)\
+          \ ? normalized : \"REVIEW_REQUIRED\";\n}\n\nfunction main({\n  llmText,\n  normalizedProductCode,\n  riskLevel,\n\
+          \  statusSuggestion,\n  needsHumanReview,\n  anomalyReasonsJson,\n  locale\n}) {\n  const parsed = safeParseJson(llmText)\
+          \ || {};\n\n  const safeStatus = normalizeStatus(statusSuggestion);\n  const safeRisk = [\"LOW\", \"MEDIUM\", \"\
+          HIGH\"].includes(String(riskLevel || \"\").toUpperCase())\n    ? String(riskLevel).toUpperCase()\n    : \"MEDIUM\"\
+          ;\n\n  let reasons = [];\n  try {\n    reasons = JSON.parse(anomalyReasonsJson || \"[]\");\n  } catch (e) {\n  \
+          \  reasons = [];\n  }\n\n  const isKorean = String(locale || \"\").toLowerCase().startsWith(\"ko\");\n\n  const\
+          \ fallbackReviewNote = reasons.length > 0\n    ? reasons.join(\" \")\n    : \"Review this report against recent\
+          \ reference data.\";\n\n  const fallbackUserMessage = isKorean\n    ? \"제보가 접수되었습니다. 검토 후 시세에 반영됩니다.\"\n    : \"\
+          Your report was received and will be reviewed before it is used.\";\n\n  const reviewNote = removeForbiddenWords(parsed.reviewNote\
+          \ || fallbackReviewNote);\n  const userMessage = removeForbiddenWords(parsed.userMessage || fallbackUserMessage);\n\
+          \n  const checklist = Array.isArray(parsed.operatorChecklist)\n    ? parsed.operatorChecklist.map((item) => removeForbiddenWords(String(item))).slice(0,\
+          \ 5)\n    : [\n        \"Check product variant.\",\n        \"Check submitted unit.\",\n        \"Compare with nearby\
+          \ observations.\"\n      ];\n\n  return {\n    normalizedProductCode: normalizedProductCode || \"UNKNOWN\",\n  \
+          \  riskLevel: safeRisk,\n    statusSuggestion: safeStatus,\n    needsHumanReview: String(Boolean(needsHumanReview\
+          \ || safeStatus !== \"PENDING\")),\n    anomalyReasonsJson: JSON.stringify(reasons),\n    reviewNote,\n    userMessage,\n\
+          \    operatorChecklistJson: JSON.stringify(checklist)\n  };\n}"
         code_language: javascript
         outputs:
           anomalyReasonsJson:
@@ -878,7 +835,7 @@ workflow:
             type: string
           needsHumanReview:
             children: null
-            type: boolean
+            type: string
           normalizedProductCode:
             children: null
             type: string
@@ -952,44 +909,44 @@ workflow:
     - data:
         outputs:
         - value_selector:
-          - '1781521660894'
+          - '1781523100001'
           - normalizedProductCode
-          value_type: string
+          - output
           variable: normalizedProductCode
         - value_selector:
-          - '1781521660894'
+          - '1781523100001'
           - riskLevel
-          value_type: string
+          - output
           variable: riskLevel
         - value_selector:
-          - '1781521660894'
+          - '1781523100001'
           - statusSuggestion
-          value_type: string
+          - output
           variable: statusSuggestion
         - value_selector:
-          - '1781521660894'
+          - '1781523100001'
           - needsHumanReview
-          value_type: boolean
+          - output
           variable: needsHumanReview
         - value_selector:
-          - '1781521660894'
+          - '1781523100001'
           - anomalyReasonsJson
-          value_type: string
+          - output
           variable: anomalyReasonsJson
         - value_selector:
-          - '1781521660894'
+          - '1781523100001'
           - reviewNote
-          value_type: string
+          - output
           variable: reviewNote
         - value_selector:
-          - '1781521660894'
+          - '1781523100001'
           - userMessage
-          value_type: string
+          - output
           variable: userMessage
         - value_selector:
-          - '1781521660894'
+          - '1781523100001'
           - operatorChecklistJson
-          value_type: string
+          - output
           variable: operatorChecklistJson
         selected: false
         title: Output
@@ -997,7 +954,7 @@ workflow:
       height: 271
       id: '1781521890198'
       position:
-        x: 2008.7156312939164
+        x: 2068.7156312939164
         y: 565.3981213256981
       positionAbsolute:
         x: 2008.7156312939164
@@ -1008,63 +965,89 @@ workflow:
       type: custom
       width: 242
     - data:
-        outputs:
-        - value_selector:
-          - '1781519824055'
-          - normalizedProductCode
-          value_type: string
-          variable: normalizedProductCode
-        - value_selector:
-          - '1781520141192'
-          - riskLevel
-          value_type: string
-          variable: riskLevel
-        - value_selector:
-          - '1781520141192'
-          - statusSuggestion
-          value_type: string
-          variable: statusSuggestion
-        - value_selector:
-          - '1781520141192'
-          - needsHumanReview
-          value_type: boolean
-          variable: needsHumanReview
-        - value_selector:
-          - '1781520141192'
-          - anomalyReasonsJson
-          value_type: string
-          variable: anomalyReasonsJson
-        - value_selector:
-          - '1781520141192'
-          - reviewNote
-          value_type: string
-          variable: reviewNote
-        - value_selector:
-          - '1781520141192'
-          - userMessage
-          value_type: string
-          variable: userMessage
-        - value_selector:
-          - '1781520141192'
-          - operatorChecklistJson
-          value_type: string
-          variable: operatorChecklistJson
+        type: variable-aggregator
+        title: Merge Branch Outputs
+        desc: 정상 경로와 조기 REJECT 경로의 출력을 병합해 End 노드를 하나로 유지
+        output_type: string
+        variables: []
+        advanced_settings:
+          group_enabled: true
+          groups:
+          - groupId: 3ec867a4-4bf2-4b84-bfea-d0af89fe1d9b
+            group_name: normalizedProductCode
+            output_type: string
+            variables:
+            - - '1781521660894'
+              - normalizedProductCode
+            - - '1781520141192'
+              - normalizedProductCode
+          - groupId: 1161882a-0942-4ba4-875a-facad68aeb38
+            group_name: riskLevel
+            output_type: string
+            variables:
+            - - '1781521660894'
+              - riskLevel
+            - - '1781520141192'
+              - riskLevel
+          - groupId: da7b7ad8-3c8a-4e2f-96d6-44566fc67d43
+            group_name: statusSuggestion
+            output_type: string
+            variables:
+            - - '1781521660894'
+              - statusSuggestion
+            - - '1781520141192'
+              - statusSuggestion
+          - groupId: 18be128b-9583-449d-b58e-d70bc7347994
+            group_name: needsHumanReview
+            output_type: string
+            variables:
+            - - '1781521660894'
+              - needsHumanReview
+            - - '1781520141192'
+              - needsHumanReview
+          - groupId: 829f6d43-af30-4b54-9a25-23d6394b6662
+            group_name: anomalyReasonsJson
+            output_type: string
+            variables:
+            - - '1781521660894'
+              - anomalyReasonsJson
+            - - '1781520141192'
+              - anomalyReasonsJson
+          - groupId: 86636c26-5076-40df-bd81-7d71d36fece2
+            group_name: reviewNote
+            output_type: string
+            variables:
+            - - '1781521660894'
+              - reviewNote
+            - - '1781520141192'
+              - reviewNote
+          - groupId: 2020be93-49d6-42c0-b182-32d9f9eb96af
+            group_name: userMessage
+            output_type: string
+            variables:
+            - - '1781521660894'
+              - userMessage
+            - - '1781520141192'
+              - userMessage
+          - groupId: bcf88593-9b3d-4264-8336-0b256ceecf1a
+            group_name: operatorChecklistJson
+            output_type: string
+            variables:
+            - - '1781521660894'
+              - operatorChecklistJson
+            - - '1781520141192'
+              - operatorChecklistJson
         selected: false
-        title: Output (Invalid)
-        type: end
-      height: 271
-      id: '1781522292852'
-      position:
-        x: 1234.2076284574707
-        y: 273.9591110366418
-      positionAbsolute:
-        x: 1234.2076284574707
-        y: 273.9591110366418
-      selected: false
+      id: '1781523100001'
+      position: &id001
+        x: 1708.7156312939164
+        y: 565.3981213256981
+      positionAbsolute: *id001
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 242
+      width: 244
+      height: 400
     viewport:
       x: -1228.525032181415
       y: -248.16721803242126

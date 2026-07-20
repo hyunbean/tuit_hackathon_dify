@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 백엔드 + 채점기 유닛테스트
+        run: python -m pytest server/test_server.py eval/test_scoring.py -q
+      - name: eval 하네스 스모크 (mock)
+        run: python -m eval.run_eval --workflow all --mock
+
+  # DIFY_* 시크릿이 등록된 경우에만 실제 워크플로우 회귀 평가 실행
+  live-eval:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    env:
+      DIFY_NORMALIZER_API_KEY: ${{ secrets.DIFY_NORMALIZER_API_KEY }}
+      DIFY_PRICE_INSIGHT_API_KEY: ${{ secrets.DIFY_PRICE_INSIGHT_API_KEY }}
+      DIFY_REPORT_INSPECTOR_API_KEY: ${{ secrets.DIFY_REPORT_INSPECTOR_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 실제 Dify 회귀 평가 (키 없으면 건너뜀)
+        run: |
+          if [ -z "$DIFY_NORMALIZER_API_KEY" ]; then
+            echo "DIFY_* 시크릿 미설정 — live eval 건너뜀"
+          else
+            python -m eval.run_eval --workflow all
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-results
+          path: eval/results/
+          if-no-files-found: ignore

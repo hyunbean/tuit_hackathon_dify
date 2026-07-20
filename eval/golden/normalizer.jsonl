@@ -1,0 +1,40 @@
+{"id": "N01", "inputs": {"rawProductName": "pomidor", "locale": "uz"}, "expect": {"standardProductCode": "TOMATO"}}
+{"id": "N02", "inputs": {"rawProductName": "помидор", "locale": "ru"}, "expect": {"standardProductCode": "TOMATO"}}
+{"id": "N03", "inputs": {"rawProductName": "토마토", "locale": "ko"}, "expect": {"standardProductCode": "TOMATO"}}
+{"id": "N04", "inputs": {"rawProductName": "tomato", "locale": "en"}, "expect": {"standardProductCode": "TOMATO"}}
+{"id": "N05", "inputs": {"rawProductName": "pink greenhouse pomidor", "locale": "uz"}, "expect": {"standardProductCode": "TOMATO", "variant": "PINK_GREENHOUSE"}}
+{"id": "N06", "inputs": {"rawProductName": "greenhouse pomidor", "locale": "uz"}, "expect": {"standardProductCode": "TOMATO", "variant": "GREENHOUSE"}}
+{"id": "N07", "inputs": {"rawProductName": "pomidorr", "locale": "uz"}, "expect": {"standardProductCode": "TOMATO"}, "note": "오타"}
+{"id": "N08", "inputs": {"rawProductName": "bodring", "locale": "uz"}, "expect": {"standardProductCode": "CUCUMBER"}}
+{"id": "N09", "inputs": {"rawProductName": "огурец", "locale": "ru"}, "expect": {"standardProductCode": "CUCUMBER"}}
+{"id": "N10", "inputs": {"rawProductName": "오이", "locale": "ko"}, "expect": {"standardProductCode": "CUCUMBER"}}
+{"id": "N11", "inputs": {"rawProductName": "sabzi", "locale": "uz"}, "expect": {"standardProductCode": "CARROT"}}
+{"id": "N12", "inputs": {"rawProductName": "морковь", "locale": "ru"}, "expect": {"standardProductCode": "CARROT"}}
+{"id": "N13", "inputs": {"rawProductName": "kartoshka", "locale": "uz"}, "expect": {"standardProductCode": "POTATO"}}
+{"id": "N14", "inputs": {"rawProductName": "картошка", "locale": "ru"}, "expect": {"standardProductCode": "POTATO"}}
+{"id": "N15", "inputs": {"rawProductName": "감자", "locale": "ko"}, "expect": {"standardProductCode": "POTATO"}}
+{"id": "N16", "inputs": {"rawProductName": "piyoz", "locale": "uz"}, "expect": {"standardProductCode": "ONION"}}
+{"id": "N17", "inputs": {"rawProductName": "лук", "locale": "ru"}, "expect": {"standardProductCode": "ONION"}}
+{"id": "N18", "inputs": {"rawProductName": "olma", "locale": "uz"}, "expect": {"standardProductCode": "APPLE"}}
+{"id": "N19", "inputs": {"rawProductName": "яблоко", "locale": "ru"}, "expect": {"standardProductCode": "APPLE"}}
+{"id": "N20", "inputs": {"rawProductName": "guruch", "locale": "uz"}, "expect": {"standardProductCode": "RICE"}}
+{"id": "N21", "inputs": {"rawProductName": "рис", "locale": "ru"}, "expect": {"standardProductCode": "RICE"}}
+{"id": "N22", "inputs": {"rawProductName": "쌀", "locale": "ko"}, "expect": {"standardProductCode": "RICE"}}
+{"id": "N23", "inputs": {"rawProductName": "tuxum", "locale": "uz"}, "expect": {"standardProductCode": "EGGS"}}
+{"id": "N24", "inputs": {"rawProductName": "tuxum 10 dona", "locale": "uz"}, "expect": {"standardProductCode": "EGGS", "normalizedUnitCode": "PCS_10"}}
+{"id": "N25", "inputs": {"rawProductName": "яйца 10 шт", "locale": "ru"}, "expect": {"standardProductCode": "EGGS", "normalizedUnitCode": "PCS_10"}}
+{"id": "N26", "inputs": {"rawProductName": "달걀 10개", "locale": "ko"}, "expect": {"standardProductCode": "EGGS", "normalizedUnitCode": "PCS_10"}}
+{"id": "N27", "inputs": {"rawProductName": "o'simlik yog'i", "locale": "uz"}, "expect": {"standardProductCode": "VEGETABLE_OIL"}}
+{"id": "N28", "inputs": {"rawProductName": "osimlik yogi 1 litr", "locale": "uz"}, "expect": {"standardProductCode": "VEGETABLE_OIL", "normalizedUnitCode": "LITER"}}
+{"id": "N29", "inputs": {"rawProductName": "растительное масло", "locale": "ru"}, "expect": {"standardProductCode": "VEGETABLE_OIL"}}
+{"id": "N30", "inputs": {"rawProductName": "sunflower oil", "locale": "en"}, "expect": {"standardProductCode": "VEGETABLE_OIL"}}
+{"id": "N31", "inputs": {"rawProductName": "mol go'shti", "locale": "uz"}, "expect": {"standardProductCode": "BEEF"}}
+{"id": "N32", "inputs": {"rawProductName": "говядина", "locale": "ru"}, "expect": {"standardProductCode": "BEEF"}}
+{"id": "N33", "inputs": {"rawProductName": "소고기 1kg", "locale": "ko"}, "expect": {"standardProductCode": "BEEF", "normalizedUnitCode": "KG"}}
+{"id": "N34", "inputs": {"rawProductName": "POMIDOR  ", "locale": "uz"}, "expect": {"standardProductCode": "TOMATO"}, "note": "대문자+공백"}
+{"id": "N35", "inputs": {"rawProductName": "pamidor", "locale": "uz"}, "expect": {"standardProductCode": "TOMATO"}, "note": "철자 변형"}
+{"id": "N36", "inputs": {"rawProductName": "kartoshka 1 kg", "locale": "uz", "unitText": "kg"}, "expect": {"standardProductCode": "POTATO", "normalizedUnitCode": "KG"}}
+{"id": "N37", "inputs": {"rawProductName": "quruq meva", "locale": "uz"}, "expect": {"standardProductCode": "UNKNOWN", "needsHumanReview": true}, "note": "말린 과일 — 표준코드 밖"}
+{"id": "N38", "inputs": {"rawProductName": "asdfgh", "locale": "en"}, "expect": {"standardProductCode": "UNKNOWN", "needsHumanReview": true}, "note": "노이즈 입력"}
+{"id": "N39", "inputs": {"rawProductName": "хлеб", "locale": "ru"}, "expect": {"standardProductCode": "UNKNOWN", "needsHumanReview": true}, "note": "빵 — 표준코드 밖"}
+{"id": "N40", "inputs": {"rawProductName": "piyoz bir bog'", "locale": "uz"}, "expect": {"standardProductCode": "ONION", "normalizedUnitCode": "BUNDLE"}, "note": "한 단"}

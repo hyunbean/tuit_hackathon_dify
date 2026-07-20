@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BozorCheck 데모 — 가격 판정 + AI 코치</title>
+<style>
+  :root { --red: #c0392b; --bg: #f7f5f2; --card: #fff; --line: #e4ded6; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: 'Segoe UI', 'Malgun Gothic', sans-serif; background: var(--bg);
+         color: #2c2c2c; max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  .sub { color: #777; font-size: .9rem; margin-bottom: 20px; }
+  form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+         background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+         padding: 16px; margin-bottom: 20px; }
+  label { font-size: .8rem; color: #555; display: flex; flex-direction: column; gap: 4px; }
+  select, input { padding: 8px; border: 1px solid var(--line); border-radius: 8px; font-size: .95rem; }
+  button { grid-column: 1 / -1; padding: 12px; background: var(--red); color: #fff;
+           border: 0; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+  button:disabled { opacity: .5; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+          padding: 16px; margin-bottom: 14px; }
+  .card h2 { font-size: .95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .tag { font-size: .7rem; padding: 2px 8px; border-radius: 99px; color: #fff; }
+  .tag.det { background: #34495e; } .tag.ai { background: var(--red); }
+  .verdict { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+  .verdict.success { color: #27ae60; } .verdict.info { color: #2980b9; }
+  .verdict.warning { color: #e67e22; } .verdict.danger { color: var(--red); }
+  .row { display: flex; justify-content: space-between; font-size: .9rem;
+         padding: 4px 0; border-bottom: 1px dashed var(--line); }
+  .row:last-child { border-bottom: 0; }
+  .muted { color: #888; font-size: .85rem; }
+  .phrase { background: #faf3ee; border-radius: 8px; padding: 10px; margin-top: 8px;
+            font-size: .9rem; }
+  #aiBody.unavailable { color: #999; }
+  .note { font-size: .78rem; color: #999; margin-top: 20px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<h1>BozorCheck 데모</h1>
+<p class="sub">가격 판정은 백엔드(결정론), 설명·흥정 문장은 Dify(LLM) — 역할 분리 데모</p>
+
+<form id="form">
+  <label>품목
+    <select id="product"></select>
+  </label>
+  <label>시장
+    <select id="market"></select>
+  </label>
+  <label>상인 제시가 (UZS)
+    <input id="price" type="number" min="1" value="22000" required>
+  </label>
+  <label>응답 언어
+    <select id="locale">
+      <option value="ko">한국어</option><option value="en">English</option>
+      <option value="uz">O'zbekcha</option><option value="ru">Русский</option>
+    </select>
+  </label>
+  <button id="submit">가격 확인</button>
+</form>
+
+<div class="card" id="priceCard" hidden>
+  <h2><span class="tag det">백엔드 판정</span> 가격 판정 카드</h2>
+  <div class="verdict" id="verdictText"></div>
+  <div id="priceRows"></div>
+</div>
+
+<div class="card" id="aiCard" hidden>
+  <h2><span class="tag ai">AI</span> AI 가격 코치</h2>
+  <div id="aiBody"></div>
+</div>
+
+<p class="note">
+  데모 데이터는 시드값입니다 (실측 아님). AI 코치는 백엔드 판정을 바꾸지 못하며,
+  Dify API 키가 서버에 없으면 가격 판정 카드만 표시됩니다 — 핸드오프 설계 문서의
+  실패 처리 규칙 그대로입니다.
+</p>
+
+<script>
+const VERDICT = {
+  CHEAP:   { label: '좋은 가격입니다. 품질만 확인해 보세요.', cls: 'success' },
+  FAIR:    { label: '현재 시세 범위 안에 있습니다.', cls: 'info' },
+  EXPENSIVE: { label: '조금 높은 편입니다. 중앙값 근처로 흥정해 보세요.', cls: 'warning' },
+  VERY_EXPENSIVE: { label: '상당히 높은 편입니다. 다른 가게와 비교해 보세요.', cls: 'danger' },
+};
+const $ = id => document.getElementById(id);
+const fmt = n => Number(n).toLocaleString('ko-KR');
+
+async function loadCatalog() {
+  const [prods, markets] = await Promise.all([
+    fetch('/api/v1/products').then(r => r.json()),
+    fetch('/api/v1/markets').then(r => r.json()),
+  ]);
+  $('product').innerHTML = prods.map(p => `<option value="${p.code}">${p.name}</option>`).join('');
+  $('market').innerHTML = markets.map(m => `<option value="${m.code}">${m.name}</option>`).join('');
+}
+
+$('form').addEventListener('submit', async e => {
+  e.preventDefault();
+  $('submit').disabled = true;
+  try {
+    const res = await fetch('/api/v1/agent/price-coach', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productCode: $('product').value, marketCode: $('market').value,
+        quotedPrice: Number($('price').value), locale: $('locale').value,
+      }),
+    });
+    if (!res.ok) throw new Error((await res.json()).detail || res.status);
+    render(await res.json());
+  } catch (err) {
+    alert('요청 실패: ' + err.message);
+  } finally {
+    $('submit').disabled = false;
+  }
+});
+
+function render({ priceCheck: pc, aiCoach: ai }) {
+  const v = VERDICT[pc.verdict];
+  $('verdictText').textContent = v.label;
+  $('verdictText').className = 'verdict ' + v.cls;
+  $('priceRows').innerHTML = [
+    ['상인 제시가', `${fmt(pc.quotedPrice)} UZS/${pc.unitCode}`],
+    ['적정가 범위', `${fmt(pc.fairLow)} ~ ${fmt(pc.fairHigh)} UZS`],
+    ['중앙값', `${fmt(pc.fairMid)} UZS`],
+    ['추천 흥정 기준', `${fmt(pc.recommendedTargetPrice)} UZS`],
+    ['신뢰도 · 표본', `${Math.round(pc.confidenceScore * 100)}% · ${pc.sampleCount}건`],
+  ].map(([k, val]) => `<div class="row"><span class="muted">${k}</span><span>${val}</span></div>`).join('');
+  $('priceCard').hidden = false;
+
+  const body = $('aiBody');
+  if (ai.status === 'ok') {
+    body.className = '';
+    body.innerHTML = `<p>${ai.insightText}</p>` +
+      (ai.optionalBargainPhrase ? `<div class="phrase">🗣 ${ai.optionalBargainPhrase}</div>` : '') +
+      (ai.sourceSummary ? `<p class="muted" style="margin-top:8px">${ai.sourceSummary}</p>` : '');
+  } else {
+    body.className = 'unavailable';
+    body.textContent = 'AI 코치를 사용할 수 없습니다 (API 키 미설정 또는 응답 실패). 가격 판정은 백엔드 결과 그대로 유효합니다.';
+  }
+  $('aiCard').hidden = false;
+}
+
+loadCatalog();
+</script>
+</body>
+</html>
