@@ -338,7 +338,13 @@ workflow:
             \ to EGGS.\n- \"tuxum 10 pcs\" maps to EGGS with unit PCS_10.\n- \"guruch\"\
             \ maps to RICE.\n- \"o‘simlik yog‘i\", \"osimlik yogi\", \"sunflower oil\"\
             , \"cottonseed oil\", or \"растительное масло\" maps to VEGETABLE_OIL.\n\
-            - \"mol go‘shti\" or \"говядина\" maps to BEEF.\n- Generic words such\
+            - \"mol go‘shti\" or \"говядина\" maps to BEEF.\n- \"bodring\" or \"bodringlar\"\
+            \ maps to CUCUMBER.\n- \"olma\" alone always means the fruit APPLE (never\
+            \ confuse with the Uzbek negative-imperative particle \"olma/olmang\",\
+            \ e.g. in \"sotib olmang\" = do not buy). Do not lower confidence for\
+            \ this.\n- \"bog‘\", \"bir bog‘\",\
+            \ or \"пучок\" always indicates unit BUNDLE, regardless of the matched\
+            \ product.\n- Generic words such\
             \ as \"unknown\", \"local\", \"vegetable\", \"product\", \"item\", \"\
             market\", \"fresh\" are not enough for a confident match.\n- \"unknown\
             \ local vegetable\" must return UNKNOWN and needsHumanReview=true.\n-\
