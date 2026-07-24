@@ -4,12 +4,14 @@
     python -m eval.run_eval --workflow all --mock          # API 없이 하네스 검증
     python -m eval.run_eval --workflow normalizer          # 실제 Dify 호출
     python -m eval.run_eval --workflow price_insight report_inspector
+    python -m eval.run_eval --workflow all --judge         # 규칙 채점 + LLM-judge 이중검증
 
 실제 호출에 필요한 환경변수:
     DIFY_BASE_URL                  (기본 https://api.dify.ai/v1)
     DIFY_NORMALIZER_API_KEY        Product Normalizer 워크플로우 API 키
     DIFY_PRICE_INSIGHT_API_KEY     Price Insight Explainer 워크플로우 API 키
     DIFY_REPORT_INSPECTOR_API_KEY  Report Inspector 워크플로우 API 키
+    ANTHROPIC_API_KEY              --judge 사용 시 필요 (없으면 케이스별로 skip 처리)
 
 결과는 콘솔 요약 + eval/results/<workflow>.json 에 저장된다.
 """
@@ -25,10 +27,12 @@ from pathlib import Path
 try:  # 패키지 실행(-m eval.run_eval)과 직접 실행 둘 다 지원
     from eval.scoring import SCORERS
     from eval import mock_llm
+    from eval import llm_judge
 except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
     from eval.scoring import SCORERS
     from eval import mock_llm
+    from eval import llm_judge
 
 EVAL_DIR = Path(__file__).resolve().parent
 GOLDEN = {
@@ -72,10 +76,10 @@ def call_dify(workflow: str, inputs: dict) -> dict:
     return outputs
 
 
-def run(workflow: str, mock: bool, max_cases: int | None) -> dict:
+def run(workflow: str, mock: bool, max_cases: int | None, use_judge: bool = False) -> dict:
     cases = load_cases(workflow)[:max_cases]
     scorer = SCORERS[workflow]
-    results, passed = [], 0
+    results, passed, disagreements = [], 0, 0
     for case in cases:
         t0 = time.time()
         try:
@@ -86,21 +90,32 @@ def run(workflow: str, mock: bool, max_cases: int | None) -> dict:
             outputs, failures = {}, [f"호출 오류: {e}"]
         ok = not failures
         passed += ok
-        results.append({
+        record = {
             "id": case["id"], "pass": ok, "failures": failures,
             "latency_s": round(time.time() - t0, 2),
             "note": case.get("note", ""), "outputs": outputs,
-        })
+        }
+        if use_judge:
+            cross = llm_judge.cross_validate(workflow, case, outputs, ok)
+            record["judge"] = cross
+            if cross["agree"] is False:
+                disagreements += 1
+        results.append(record)
         mark = "PASS" if ok else "FAIL"
         print(f"  [{mark}] {case['id']} {case.get('note', '')}")
         for msg in failures:
             print(f"         - {msg}")
+        if use_judge and record.get("judge", {}).get("agree") is False:
+            print(f"         ⚠️ judge 불일치: {record['judge']['judge_reason']}"
+                  f" (규칙={'pass' if ok else 'fail'} / judge={'pass' if record['judge']['judge_pass'] else 'fail'})")
     summary = {
         "workflow": workflow, "mock": mock,
         "total": len(cases), "passed": passed,
         "accuracy": round(passed / len(cases), 3) if cases else None,
         "results": results,
     }
+    if use_judge:
+        summary["judge_disagreements"] = disagreements
     out = EVAL_DIR / "results" / f"{workflow}{'_mock' if mock else ''}.json"
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -113,6 +128,9 @@ def main() -> int:
                    choices=[*SCORERS, "all"])
     p.add_argument("--mock", action="store_true",
                    help="Dify 호출 없이 mock 응답으로 하네스 자체를 검증")
+    p.add_argument("--judge", action="store_true",
+                   help="규칙 채점기와 별도로 LLM-judge를 돌려 불일치 케이스를 찾는다"
+                        "(ANTHROPIC_API_KEY 필요, 없으면 케이스별로 skip)")
     p.add_argument("--max-cases", type=int, default=None)
     args = p.parse_args()
 
@@ -120,12 +138,15 @@ def main() -> int:
     summaries = []
     for wf in targets:
         print(f"\n=== {wf} ({'mock' if args.mock else 'live'}) ===")
-        summaries.append(run(wf, args.mock, args.max_cases))
+        summaries.append(run(wf, args.mock, args.max_cases, use_judge=args.judge))
 
     print("\n=== 요약 ===")
     worst = 1.0
     for s in summaries:
-        print(f"  {s['workflow']:<18} {s['passed']}/{s['total']}  ({s['accuracy']:.0%})")
+        line = f"  {s['workflow']:<18} {s['passed']}/{s['total']}  ({s['accuracy']:.0%})"
+        if args.judge:
+            line += f"  judge 불일치 {s.get('judge_disagreements', 0)}건"
+        print(line)
         worst = min(worst, s["accuracy"] or 0)
     return 0 if worst == 1.0 or not args.mock else 1  # mock은 100%가 정상
 
