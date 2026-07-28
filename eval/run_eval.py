@@ -5,13 +5,16 @@
     python -m eval.run_eval --workflow normalizer          # 실제 Dify 호출
     python -m eval.run_eval --workflow price_insight report_inspector
     python -m eval.run_eval --workflow all --judge         # 규칙 채점 + LLM-judge 이중검증
+    python -m eval.run_eval --workflow all --judge --backend cli  # judge를 claude CLI로 (API 비용 없음)
 
 실제 호출에 필요한 환경변수:
     DIFY_BASE_URL                  (기본 https://api.dify.ai/v1)
     DIFY_NORMALIZER_API_KEY        Product Normalizer 워크플로우 API 키
     DIFY_PRICE_INSIGHT_API_KEY     Price Insight Explainer 워크플로우 API 키
     DIFY_REPORT_INSPECTOR_API_KEY  Report Inspector 워크플로우 API 키
-    ANTHROPIC_API_KEY              --judge 사용 시 필요 (없으면 케이스별로 skip 처리)
+    ANTHROPIC_API_KEY              --judge --backend api 사용 시 필요 (없으면 케이스별로 skip)
+                                    --judge --backend cli 는 API 키 대신 `claude` CLI를 셸아웃한다
+                                    (PATH에 claude가 있고 로그인돼 있어야 함)
 
 결과는 콘솔 요약 + eval/results/<workflow>.json 에 저장된다.
 """
@@ -76,7 +79,8 @@ def call_dify(workflow: str, inputs: dict) -> dict:
     return outputs
 
 
-def run(workflow: str, mock: bool, max_cases: int | None, use_judge: bool = False) -> dict:
+def run(workflow: str, mock: bool, max_cases: int | None, use_judge: bool = False,
+        judge_backend: str = "api") -> dict:
     cases = load_cases(workflow)[:max_cases]
     scorer = SCORERS[workflow]
     results, passed, disagreements = [], 0, 0
@@ -96,7 +100,7 @@ def run(workflow: str, mock: bool, max_cases: int | None, use_judge: bool = Fals
             "note": case.get("note", ""), "outputs": outputs,
         }
         if use_judge:
-            cross = llm_judge.cross_validate(workflow, case, outputs, ok)
+            cross = llm_judge.cross_validate(workflow, case, outputs, ok, backend=judge_backend)
             record["judge"] = cross
             if cross["agree"] is False:
                 disagreements += 1
@@ -130,7 +134,11 @@ def main() -> int:
                    help="Dify 호출 없이 mock 응답으로 하네스 자체를 검증")
     p.add_argument("--judge", action="store_true",
                    help="규칙 채점기와 별도로 LLM-judge를 돌려 불일치 케이스를 찾는다"
-                        "(ANTHROPIC_API_KEY 필요, 없으면 케이스별로 skip)")
+                        "(기본 backend=api는 ANTHROPIC_API_KEY 필요, 없으면 케이스별로 skip)")
+    p.add_argument("--backend", choices=["api", "cli"], default="api",
+                   help="--judge의 호출 방식. api(기본값, 하위호환)=Anthropic API 직접 호출"
+                        "(종량제 비용); cli=`claude -p`로 셸아웃(Claude Code 구독 사용,"
+                        " API 키 불필요). --judge 없이는 무시된다.")
     p.add_argument("--max-cases", type=int, default=None)
     args = p.parse_args()
 
@@ -138,7 +146,8 @@ def main() -> int:
     summaries = []
     for wf in targets:
         print(f"\n=== {wf} ({'mock' if args.mock else 'live'}) ===")
-        summaries.append(run(wf, args.mock, args.max_cases, use_judge=args.judge))
+        summaries.append(run(wf, args.mock, args.max_cases, use_judge=args.judge,
+                              judge_backend=args.backend))
 
     print("\n=== 요약 ===")
     worst = 1.0
