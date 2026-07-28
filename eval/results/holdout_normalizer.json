@@ -1,0 +1,177 @@
+{
+  "workflow": "normalizer",
+  "mock": false,
+  "holdout_label": "new holdout, not from original tuning process",
+  "excluded_from_pool": [
+    "N08",
+    "N18",
+    "N40"
+  ],
+  "total": 10,
+  "passed": 9,
+  "accuracy": 0.9,
+  "results": [
+    {
+      "id": "N07",
+      "pass": false,
+      "failures": [
+        "productCode 불일치: 기대 TOMATO / 실제 UNKNOWN"
+      ],
+      "latency_s": 7.83,
+      "note": "오타",
+      "outputs": {
+        "standardProductCode": "UNKNOWN",
+        "standardProductName": "Unknown",
+        "variant": "",
+        "normalizedUnitCode": "KG",
+        "matchConfidence": 0.2,
+        "needsHumanReview": true,
+        "reason": "Matched 'pomidorr' which is not a recognized alias for TOMATO."
+      }
+    },
+    {
+      "id": "N11",
+      "pass": true,
+      "failures": [],
+      "latency_s": 4.53,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "CARROT",
+        "standardProductName": "Carrot",
+        "variant": "",
+        "normalizedUnitCode": "KG",
+        "matchConfidence": 0.91,
+        "needsHumanReview": false,
+        "reason": "Matched sabzi to CARROT alias."
+      }
+    },
+    {
+      "id": "N17",
+      "pass": true,
+      "failures": [],
+      "latency_s": 4.39,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "ONION",
+        "standardProductName": "Onion",
+        "variant": "",
+        "normalizedUnitCode": "KG",
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "Matched лук to ONION."
+      }
+    },
+    {
+      "id": "N21",
+      "pass": true,
+      "failures": [],
+      "latency_s": 4.16,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "RICE",
+        "standardProductName": "Rice",
+        "variant": "",
+        "normalizedUnitCode": "KG",
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "Matched рис to RICE."
+      }
+    },
+    {
+      "id": "N26",
+      "pass": true,
+      "failures": [],
+      "latency_s": 4.54,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "EGGS",
+        "standardProductName": "Eggs",
+        "variant": "",
+        "normalizedUnitCode": "PCS_10",
+        "matchConfidence": 0.91,
+        "needsHumanReview": false,
+        "reason": "Matched 달걀 10개 to EGGS with unit PCS_10."
+      }
+    },
+    {
+      "id": "N31",
+      "pass": true,
+      "failures": [],
+      "latency_s": 6.62,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "BEEF",
+        "standardProductName": "Beef",
+        "variant": "",
+        "normalizedUnitCode": "KG",
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "Matched mol go'shti alias to BEEF."
+      }
+    },
+    {
+      "id": "N32",
+      "pass": true,
+      "failures": [],
+      "latency_s": 4.64,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "BEEF",
+        "standardProductName": "Beef",
+        "variant": "",
+        "normalizedUnitCode": "KG",
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "Matched говядина to BEEF."
+      }
+    },
+    {
+      "id": "N33",
+      "pass": true,
+      "failures": [],
+      "latency_s": 9.86,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "BEEF",
+        "standardProductName": "Beef",
+        "variant": "",
+        "normalizedUnitCode": "KG",
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "Matched 소고기 to BEEF with default unit KG."
+      }
+    },
+    {
+      "id": "N34",
+      "pass": true,
+      "failures": [],
+      "latency_s": 5.45,
+      "note": "대문자+공백",
+      "outputs": {
+        "standardProductCode": "TOMATO",
+        "standardProductName": "Tomato",
+        "variant": "",
+        "normalizedUnitCode": "KG",
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "Matched pomidor alias to TOMATO."
+      }
+    },
+    {
+      "id": "N39",
+      "pass": true,
+      "failures": [],
+      "latency_s": 4.33,
+      "note": "빵 — 표준코드 밖",
+      "outputs": {
+        "standardProductCode": "UNKNOWN",
+        "standardProductName": "Unknown",
+        "variant": "",
+        "normalizedUnitCode": "KG",
+        "matchConfidence": 0.2,
+        "needsHumanReview": true,
+        "reason": "No matching aliases found for хлеб."
+      }
+    }
+  ]
+}

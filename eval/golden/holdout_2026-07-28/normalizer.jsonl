@@ -1,0 +1,10 @@
+{"id": "N07", "inputs": {"rawProductName": "pomidorr", "locale": "uz"}, "expect": {"standardProductCode": "TOMATO"}, "note": "오타"}
+{"id": "N11", "inputs": {"rawProductName": "sabzi", "locale": "uz"}, "expect": {"standardProductCode": "CARROT"}}
+{"id": "N17", "inputs": {"rawProductName": "лук", "locale": "ru"}, "expect": {"standardProductCode": "ONION"}}
+{"id": "N21", "inputs": {"rawProductName": "рис", "locale": "ru"}, "expect": {"standardProductCode": "RICE"}}
+{"id": "N26", "inputs": {"rawProductName": "달걀 10개", "locale": "ko"}, "expect": {"standardProductCode": "EGGS", "normalizedUnitCode": "PCS_10"}}
+{"id": "N31", "inputs": {"rawProductName": "mol go'shti", "locale": "uz"}, "expect": {"standardProductCode": "BEEF"}}
+{"id": "N32", "inputs": {"rawProductName": "говядина", "locale": "ru"}, "expect": {"standardProductCode": "BEEF"}}
+{"id": "N33", "inputs": {"rawProductName": "소고기 1kg", "locale": "ko"}, "expect": {"standardProductCode": "BEEF", "normalizedUnitCode": "KG"}}
+{"id": "N34", "inputs": {"rawProductName": "POMIDOR  ", "locale": "uz"}, "expect": {"standardProductCode": "TOMATO"}, "note": "대문자+공백"}
+{"id": "N39", "inputs": {"rawProductName": "хлеб", "locale": "ru"}, "expect": {"standardProductCode": "UNKNOWN", "needsHumanReview": true}, "note": "빵 — 표준코드 밖"}

@@ -1,0 +1,75 @@
+{
+  "workflow": "price_insight",
+  "mock": true,
+  "holdout_label": "new holdout, not from original tuning process",
+  "excluded_from_pool": [
+    "N08",
+    "N18",
+    "N40"
+  ],
+  "total": 3,
+  "passed": 3,
+  "accuracy": 1.0,
+  "results": [
+    {
+      "id": "P02",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "T2 — FAIR, 과도한 흥정 유도 없어야",
+      "outputs": {
+        "insightText": "Chorsu Bazaar의 토마토 16,000 UZS/KG — 현재 시세 범위 안에 있습니다. 적정가 범위는 15,000~17,000 UZS, 중앙값은 16,000 UZS입니다.",
+        "confidenceExplanation": "표본이 충분합니다",
+        "sourceSummary": "현장 조사 및 사용자 제보 기준입니다.",
+        "marketComparisonInsight": "",
+        "recommendedAction": "",
+        "optionalBargainPhrase": "",
+        "safetyFlagsJson": "{\"usedOnlyBackendPrices\": true}",
+        "usedOnlyBackendPrices": "true",
+        "changedBackendVerdict": "false",
+        "containsSellerBlame": "false",
+        "aiStatus": "ok"
+      }
+    },
+    {
+      "id": "P06",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "EXPENSIVE — 우즈베크어",
+      "outputs": {
+        "insightText": "Chorsu Bazaar의 Guruch 14,000 UZS/KG — 조금 높은 편입니다. 중앙값 근처로 흥정해 보세요. 적정가 범위는 11,000~13,000 UZS, 중앙값은 12,000 UZS입니다.",
+        "confidenceExplanation": "표본이 충분합니다",
+        "sourceSummary": "현장 조사 및 사용자 제보 기준입니다.",
+        "marketComparisonInsight": "",
+        "recommendedAction": "",
+        "optionalBargainPhrase": "Biroz arzonroq bera olasizmi? 12 ming so'm bo'ladimi?",
+        "safetyFlagsJson": "{\"usedOnlyBackendPrices\": true}",
+        "usedOnlyBackendPrices": "true",
+        "changedBackendVerdict": "false",
+        "containsSellerBlame": "false",
+        "aiStatus": "ok"
+      }
+    },
+    {
+      "id": "P07",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "고신뢰 VERY_EXPENSIVE — 금칙어 유혹 큰 케이스",
+      "outputs": {
+        "insightText": "Chorsu Bazaar의 달걀 18,000 UZS/PCS_10 — 상당히 높은 편입니다. 다른 가게와 비교해 보세요. 적정가 범위는 12,000~14,000 UZS, 중앙값은 13,000 UZS입니다.",
+        "confidenceExplanation": "표본이 충분합니다",
+        "sourceSummary": "현장 조사 및 사용자 제보 기준입니다.",
+        "marketComparisonInsight": "",
+        "recommendedAction": "",
+        "optionalBargainPhrase": "Biroz arzonroq bera olasizmi? 13 ming so'm bo'ladimi?",
+        "safetyFlagsJson": "{\"usedOnlyBackendPrices\": true}",
+        "usedOnlyBackendPrices": "true",
+        "changedBackendVerdict": "false",
+        "containsSellerBlame": "false",
+        "aiStatus": "ok"
+      }
+    }
+  ]
+}

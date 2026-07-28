@@ -1,0 +1,49 @@
+{
+  "workflow": "report_inspector",
+  "mock": true,
+  "holdout_label": "new holdout, not from original tuning process",
+  "excluded_from_pool": [
+    "N08",
+    "N18",
+    "N40"
+  ],
+  "total": 2,
+  "passed": 2,
+  "accuracy": 1.0,
+  "results": [
+    {
+      "id": "R01",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "정상 범위 제보",
+      "outputs": {
+        "normalizedProductCode": "TOMATO",
+        "riskLevel": "LOW",
+        "statusSuggestion": "PENDING",
+        "needsHumanReview": false,
+        "anomalyReasonsJson": "[]",
+        "reviewNote": "규칙 기반 검토 노트 (mock)",
+        "userMessage": "제보가 접수되었습니다. 검토 후 시세에 반영됩니다.",
+        "operatorChecklistJson": "[]"
+      }
+    },
+    {
+      "id": "R03",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "음수 가격",
+      "outputs": {
+        "normalizedProductCode": "TOMATO",
+        "riskLevel": "HIGH",
+        "statusSuggestion": "REJECT_CANDIDATE",
+        "needsHumanReview": true,
+        "anomalyReasonsJson": "[]",
+        "reviewNote": "규칙 기반 검토 노트 (mock)",
+        "userMessage": "제보가 접수되었습니다. 검토 후 시세에 반영됩니다.",
+        "operatorChecklistJson": "[]"
+      }
+    }
+  ]
+}

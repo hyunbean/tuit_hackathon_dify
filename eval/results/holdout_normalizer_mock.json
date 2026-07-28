@@ -1,0 +1,175 @@
+{
+  "workflow": "normalizer",
+  "mock": true,
+  "holdout_label": "new holdout, not from original tuning process",
+  "excluded_from_pool": [
+    "N08",
+    "N18",
+    "N40"
+  ],
+  "total": 10,
+  "passed": 10,
+  "accuracy": 1.0,
+  "results": [
+    {
+      "id": "N07",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "오타",
+      "outputs": {
+        "standardProductCode": "TOMATO",
+        "standardProductName": "Tomato",
+        "variant": null,
+        "normalizedUnitCode": null,
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "alias match"
+      }
+    },
+    {
+      "id": "N11",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "CARROT",
+        "standardProductName": "Carrot",
+        "variant": null,
+        "normalizedUnitCode": null,
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "alias match"
+      }
+    },
+    {
+      "id": "N17",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "ONION",
+        "standardProductName": "Onion",
+        "variant": null,
+        "normalizedUnitCode": null,
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "alias match"
+      }
+    },
+    {
+      "id": "N21",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "RICE",
+        "standardProductName": "Rice",
+        "variant": null,
+        "normalizedUnitCode": null,
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "alias match"
+      }
+    },
+    {
+      "id": "N26",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "EGGS",
+        "standardProductName": "Eggs",
+        "variant": null,
+        "normalizedUnitCode": "PCS_10",
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "alias match"
+      }
+    },
+    {
+      "id": "N31",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "BEEF",
+        "standardProductName": "Beef",
+        "variant": null,
+        "normalizedUnitCode": null,
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "alias match"
+      }
+    },
+    {
+      "id": "N32",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "BEEF",
+        "standardProductName": "Beef",
+        "variant": null,
+        "normalizedUnitCode": null,
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "alias match"
+      }
+    },
+    {
+      "id": "N33",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "",
+      "outputs": {
+        "standardProductCode": "BEEF",
+        "standardProductName": "Beef",
+        "variant": null,
+        "normalizedUnitCode": "KG",
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "alias match"
+      }
+    },
+    {
+      "id": "N34",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "대문자+공백",
+      "outputs": {
+        "standardProductCode": "TOMATO",
+        "standardProductName": "Tomato",
+        "variant": null,
+        "normalizedUnitCode": null,
+        "matchConfidence": 0.95,
+        "needsHumanReview": false,
+        "reason": "alias match"
+      }
+    },
+    {
+      "id": "N39",
+      "pass": true,
+      "failures": [],
+      "latency_s": 0.0,
+      "note": "빵 — 표준코드 밖",
+      "outputs": {
+        "standardProductCode": "UNKNOWN",
+        "standardProductName": null,
+        "variant": null,
+        "normalizedUnitCode": "UNKNOWN",
+        "matchConfidence": 0.1,
+        "needsHumanReview": true,
+        "reason": "no alias match"
+      }
+    }
+  ]
+}
