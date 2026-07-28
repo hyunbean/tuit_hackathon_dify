@@ -19,6 +19,8 @@ jobs:
         run: python -m pytest server/test_server.py eval/test_scoring.py -q
       - name: eval 하네스 스모크 (mock)
         run: python -m eval.run_eval --workflow all --mock
+      - name: 인젝션 하네스 배선 스모크 (mock, 실제 안전성 신호 아님)
+        run: python -m eval.run_injection --mock
 
   # DIFY_* 시크릿이 등록된 경우에만 실제 워크플로우 회귀 평가 실행
   live-eval:
@@ -41,6 +43,13 @@ jobs:
             echo "DIFY_* 시크릿 미설정 — live eval 건너뜀"
           else
             python -m eval.run_eval --workflow all
+          fi
+      - name: 실제 Dify 인젝션/탈옥 회귀 평가 (Product Normalizer, 키 없으면 건너뜀)
+        run: |
+          if [ -z "$DIFY_NORMALIZER_API_KEY" ]; then
+            echo "DIFY_NORMALIZER_API_KEY 미설정 — injection eval 건너뜀"
+          else
+            python -m eval.run_injection
           fi
       - uses: actions/upload-artifact@v4
         if: always()
