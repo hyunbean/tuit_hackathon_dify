@@ -1,10 +1,14 @@
-"""cross_validate의 일치/불일치 판단 로직을 검증.
+"""cross_validate의 일치/불일치 판단 로직과 judge()의 api/cli 백엔드를 검증.
 
-실제 Anthropic API를 호출하지 않는다 — llm_judge.judge를 monkeypatch로 대체해
-cross_validate가 규칙 판정과 judge 판정을 올바르게 비교하는지만 확인한다.
+실제 Anthropic API도, 실제 `claude` CLI도 호출하지 않는다 — 앞부분은 llm_judge.judge를
+monkeypatch로 대체해 cross_validate가 규칙 판정과 judge 판정을 올바르게 비교하는지만
+확인하고, 뒷부분은 requests.post / subprocess.run 자체를 monkeypatch해 각 백엔드가
+응답을 올바르게 파싱하고 실패를 skip으로 처리하는지 확인한다.
 
 실행: python -m pytest eval/test_llm_judge.py -q
 """
+import subprocess
+
 from eval import llm_judge
 
 
