@@ -3,7 +3,7 @@
 [![CI](https://github.com/hyunbean/tuit_hackathon_dify/actions/workflows/ci.yml/badge.svg)](https://github.com/hyunbean/tuit_hackathon_dify/actions/workflows/ci.yml)
 
 > 우즈베키스탄 재래시장(바자르) 실시간 시세 조회 서비스 **BozorCheck**의 AI 파트.
-> 국민대학교 × TUIT(우즈베키스탄) 글로벌 해커톤 팀 프로젝트 — **3등 수상** 🏆
+> 국민대학교 × TUIT(우즈베키스탄) 글로벌 해커톤 팀 프로젝트 — **동상** 🏆
 
 ## 내 역할
 
