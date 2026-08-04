@@ -5,6 +5,11 @@
 > 우즈베키스탄 재래시장(바자르) 실시간 시세 조회 서비스 **BozorCheck**의 AI 파트.
 > 국민대학교 × TUIT(우즈베키스탄) 글로벌 해커톤 팀 프로젝트 — **동상** 🏆
 
+**🔗 라이브 데모**: https://tuit-hackathon-dify.onrender.com
+> 무료 티어라 15분간 요청이 없으면 슬립합니다 — 첫 요청은 콜드 스타트로 수십 초 걸릴 수 있습니다.
+> `DIFY_PRICE_INSIGHT_API_KEY`가 설정되지 않아 가격 판정(백엔드 source of truth)만 동작하고
+> AI Coach 카드는 `unavailable`로 표시됩니다 — 이 폴백 자체가 설계된 실패 처리 규칙입니다.
+
 ## 내 역할
 
 4인 팀 프로젝트에서 **AI 파트 전체**를 단독으로 담당했습니다.
